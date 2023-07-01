@@ -27,14 +27,26 @@ import { Item, PageContext, Person } from "../contexts/PageContext";
 import classNames from "classnames";
 import { useState, useEffect, useRef, useContext, use, cache } from "react";
 import useSWR from "swr";
-import { get } from "http";
+import { useRouter } from "next/navigation";
 
+let access_token =
+    typeof window !== "undefined"
+        ? window.localStorage.getItem("access_token") || ""
+        : "";
 const getFriends = async () => {
-    const res = await fetch("http://localhost:3001/v2/get_friends", {
-        headers: {
-            token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkRGF0YSI6ImUwYmNmNTQ1Y2EyNzI3NzJiM2U0MDRkZGMzZjNjNmNiIiwiaWF0IjoxNjg4MDA0ODY4fQ.Pj2hkc-STII1YRFGHZInhboc_IZdmYBaXBcIc7Z7ukc",
-        },
-    });
+    if (!access_token) {
+        alert("Login expired. Please login again");
+        let router = useRouter();
+        router.push("/");
+    }
+    const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/v2/get_friends`,
+        {
+            headers: {
+                token: access_token,
+            },
+        }
+    );
     return res.json();
 };
 
