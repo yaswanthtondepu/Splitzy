@@ -28,27 +28,11 @@ import classNames from "classnames";
 import { useState, useEffect, useRef, useContext, use, cache } from "react";
 import useSWR from "swr";
 import { useRouter } from "next/navigation";
-
+import { getFriends } from "@/lib/backendrequests";
 let access_token =
     typeof window !== "undefined"
         ? window.localStorage.getItem("access_token") || ""
         : "";
-const getFriends = async () => {
-    if (!access_token) {
-        alert("Login expired. Please login again");
-        let router = useRouter();
-        router.push("/");
-    }
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/v2/get_friends`,
-        {
-            headers: {
-                token: access_token,
-            },
-        }
-    );
-    return res.json();
-};
 
 export default function SearchBar() {
     console.log("iam running successfully");
