@@ -15,7 +15,7 @@ export default function WalmartItems() {
                             Items Bought: {itemsState.length}
                         </h3>
 
-                        <div className="mt-2 grid grid-cols-4 gap-12 justify-between sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4  ">
+                        <div className="mt-2 grid grid-cols-4 gap-12 justify-between sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                             {itemsState.map((itemState, idx) => (
                                 <CardWithForm
                                     key={idx}

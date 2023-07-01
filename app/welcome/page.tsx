@@ -1,9 +1,4 @@
 "use client";
-import Link from "next/link";
-import CardWithForm from "../../components/itemcard";
-
-import PageSourceInput from "../../components/PageSourceInput";
-import { useState, useEffect } from "react";
 import { PageProvider } from "../../contexts/PageContext";
 import WelcomePageBody from "./WelcomePageBody";
 import NavBar from "../../components/NavBar";
