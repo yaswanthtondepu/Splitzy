@@ -35,6 +35,7 @@ export default function CardWithForm({
         setItemlocalSelectedPersons,
         setItemTax,
         globalTax,
+        user,
     } = useContext<PageContextType>(PageContext);
     const { name, image, price } = item;
     const [selectAll, setSelectAll] = useState<boolean>(false);
@@ -149,7 +150,9 @@ export default function CardWithForm({
                             key={globalPerson.id}
                             className="mt-2 mr-2"
                         >
-                            {globalPerson.name}
+                            {globalPerson.id === user?.id
+                                ? "You"
+                                : globalPerson.name}
                         </Button>
                     ) : (
                         <Button
@@ -158,7 +161,9 @@ export default function CardWithForm({
                             key={globalPerson.id}
                             className="mt-2 mr-2"
                         >
-                            {globalPerson.name}
+                            {globalPerson.id === user?.id
+                                ? "You"
+                                : globalPerson.name}
                         </Button>
                     )
                 )}

@@ -8,6 +8,7 @@ import {
     User,
     GroupIcon,
 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import {
     Command,
@@ -27,41 +28,18 @@ import classNames from "classnames";
 import { useState, useEffect, useRef, useContext, use, cache } from "react";
 import useSWR from "swr";
 import { useRouter } from "next/navigation";
-
-
-let access_token = typeof window !== "undefined" ? window.localStorage.getItem("access_token") || "" : "";
-const getFriends = async () => {
-    if (!access_token) {
-        alert("Login expired. Please login again");
-        let router = useRouter();
-        router.push("/");
-    }
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/v2/get_friends`,
-        {
-            headers: {
-                token: access_token,
-            },
-        }
-    );
-    return res.json();
-};
+import { getFriends } from "@/lib/backendrequests";
+let access_token =
+    typeof window !== "undefined"
+        ? window.localStorage.getItem("access_token") || ""
+        : "";
 
 export default function SearchBar() {
     console.log("iam running successfully");
     const [allFriends, setAllFriends] = useState<Person[]>([]);
-    const { globalSelectedPersons, setGlobalSelectedPersons } =
+    const { globalSelectedPersons, setGlobalSelectedPersons, user, setUser } =
         useContext(PageContext);
-    const allGroups = [
-        {
-            name: "Walmart",
-            id: 4,
-        },
-        {
-            name: "Amazon",
-            id: 5,
-        },
-    ];
+    const allGroups = [];
 
     const [isInputFocused, setInputFocused] = useState(false);
     const commandListRef = useRef<HTMLDivElement | null>(null);
@@ -88,10 +66,14 @@ export default function SearchBar() {
     };
     const handleUnSelectItem = (person: Person) => {
         console.log(person);
-        const newglobalSelectedPersons = globalSelectedPersons.filter(
-            (obj) => obj.id !== person.id
-        );
-        setGlobalSelectedPersons(newglobalSelectedPersons);
+        if (person.id !== user?.id) {
+            const newglobalSelectedPersons = globalSelectedPersons.filter(
+                (obj) => obj.id !== person.id
+            );
+            setGlobalSelectedPersons(newglobalSelectedPersons);
+        } else {
+            console.log("you cannot remove yourself");
+        }
     };
 
     useEffect(() => {
@@ -110,6 +92,7 @@ export default function SearchBar() {
             .catch((err) => {
                 console.log(err);
             });
+        console.log("setting user");
     }, []);
 
     return (
@@ -126,7 +109,7 @@ export default function SearchBar() {
                         }}
                         key={person.id}
                     >
-                        {person.name}
+                        {person.id === user?.id ? "You" : person.name}
                     </Button>
                 ))
             )}
@@ -147,21 +130,33 @@ export default function SearchBar() {
                 >
                     <CommandEmpty>No results found.</CommandEmpty>
                     <CommandGroup heading="Friends">
-                        {allFriends?.map((friend: Person) => (
-                            <div
-                                key={friend.name}
-                                onClick={() => {
-                                    handleSelectitem(friend);
-                                }}
-                            >
-                                <CommandItem>
-                                    <User className="mr-2 h-4 w-4" />
-                                    <span className="cursor-pointer">
-                                        {friend.name}
-                                    </span>
-                                </CommandItem>
-                            </div>
-                        ))}
+                        {allFriends?.map((friend: Person) =>
+                            globalSelectedPersons.some(
+                                (obj) => obj.id === friend.id
+                            ) ? null : (
+                                <div
+                                    key={friend.name}
+                                    onClick={() => {
+                                        handleSelectitem(friend);
+                                    }}
+                                >
+                                    <CommandItem>
+                                        <Avatar>
+                                            <AvatarImage
+                                                src={friend.image}
+                                                alt="NOne"
+                                            />
+                                            <AvatarFallback>
+                                                {friend.name[0]}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <span className="cursor-pointer py-4 px-4">
+                                            {friend.name}
+                                        </span>
+                                    </CommandItem>
+                                </div>
+                            )
+                        )}
                     </CommandGroup>
                     <CommandSeparator className="cursor-pointer" />
                     <CommandGroup heading="Groups">

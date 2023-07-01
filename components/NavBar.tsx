@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,19 +13,39 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import { useContext } from "react";
+import { PageContext, PageContextType } from "@/contexts/PageContext";
 import { useRouter } from "next/navigation";
-
-
+import { getUser } from "@/lib/backendrequests";
 export default function NavBar() {
     const [scrollPosition, setScrollPosition] = useState(0);
     const [showMenu, setShowMenu] = useState(false);
     const router = useRouter();
+    const { user, setUser, globalSelectedPersons, setGlobalSelectedPersons } =
+        useContext<PageContextType>(PageContext);
+
     useEffect(() => {
         const handleScroll = () => {
             setScrollPosition(window.scrollY);
         };
 
         window.addEventListener("scroll", handleScroll);
+
+        getUser()
+            .then((data: any) => {
+                console.log(data);
+                const user = {
+                    name:
+                        (data.first_name ?? "") + " " + (data.last_name ?? ""),
+                    id: data.id,
+                    image: data.picture?.medium,
+                };
+                setUser(user);
+                setGlobalSelectedPersons([...globalSelectedPersons, user]);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
 
         return () => {
             window.removeEventListener("scroll", handleScroll);
@@ -57,13 +78,14 @@ export default function NavBar() {
 
             <div
                 className="absolute cursor-pointer right-4 flex flex-row items-center "
-                onMouseOver={() => setShowMenu(true)} onMouseLeave={() => setShowMenu(false)}
+                onMouseOver={() => setShowMenu(true)}
+                onMouseLeave={() => setShowMenu(false)}
             >
                 <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>CN</AvatarFallback>
+                    <AvatarImage src={user?.image} alt="NOne" />
+                    <AvatarFallback>{user?.name[0]}</AvatarFallback>
                 </Avatar>
-                <h6 className="ml-2">Hello, Yashwanth G</h6>
+                <h6 className="ml-2">Hello, {user?.name}</h6>
                 {showMenu && (
                     <div className="absolute right-2 top-10">
                         <div className="bg-[#3e3d3d] px-5 py-2">
