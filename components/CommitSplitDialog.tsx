@@ -78,12 +78,12 @@ export function CommitSplitDialog({ expenses }: { expenses: Expense[] }) {
                     <Button
                         onClick={async () => {
                             console.log("committing");
-                            const res = await commitSplit(
+                            await validate(
                                 description,
                                 expenses,
-                                individualPayments
+                                individualPayments,
+                                commitSplit
                             );
-                            console.log(res);
                         }}
                     >
                         Commit
@@ -93,6 +93,32 @@ export function CommitSplitDialog({ expenses }: { expenses: Expense[] }) {
         </Dialog>
     );
 }
+
+const validate = async (
+    description: string,
+    expenses: Expense[],
+    individualPayments: Payment[],
+    next: Function
+) => {
+    if (description === "") {
+        alert("Description cannot be empty");
+        return;
+    }
+    if (expenses.length === 0) {
+        alert("No expenses found");
+        return;
+    }
+    if (
+        !individualPayments.some(
+            (payment) => (payment as { person: Person }).person?.name
+        )
+    ) {
+        alert("Atleast one payer should be selected");
+        return;
+    }
+    const res = next(description, expenses, individualPayments);
+    console.log(res);
+};
 
 function SelectBox({
     persons,

@@ -1,16 +1,46 @@
+"use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
+import { useContext } from "react";
+import { PageContext, PageContextType } from "@/contexts/PageContext";
+
+const getUser = async () => {
+    const res = await fetch("http://localhost:3001/v2/get_current_user", {
+        headers: {
+            token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkRGF0YSI6ImUwYmNmNTQ1Y2EyNzI3NzJiM2U0MDRkZGMzZjNjNmNiIiwiaWF0IjoxNjg4MDA0ODY4fQ.Pj2hkc-STII1YRFGHZInhboc_IZdmYBaXBcIc7Z7ukc",
+        },
+    });
+    return res.json();
+};
 
 export default function NavBar() {
     const [scrollPosition, setScrollPosition] = useState(0);
+    const { user, setUser, globalSelectedPersons, setGlobalSelectedPersons } =
+        useContext<PageContextType>(PageContext);
     useEffect(() => {
         const handleScroll = () => {
             setScrollPosition(window.scrollY);
         };
 
         window.addEventListener("scroll", handleScroll);
+
+        getUser()
+            .then((data: any) => {
+                console.log(data);
+                const user = {
+                    name:
+                        (data.first_name ?? "") + " " + (data.last_name ?? ""),
+                    id: data.id,
+                    image: data.picture?.medium,
+                };
+                setUser(user);
+                setGlobalSelectedPersons([...globalSelectedPersons, user]);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
 
         return () => {
             window.removeEventListener("scroll", handleScroll);
@@ -39,10 +69,10 @@ export default function NavBar() {
 
             <div className="absolute right-4 flex flex-row items-center ">
                 <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>CN</AvatarFallback>
+                    <AvatarImage src={user?.image} alt="NOne" />
+                    <AvatarFallback>{user?.name[0]}</AvatarFallback>
                 </Avatar>
-                <h6 className="ml-2">Hello, Yashwanth G</h6>
+                <h6 className="ml-2">Hello, {user?.name}</h6>
             </div>
         </div>
     );

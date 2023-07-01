@@ -16,6 +16,8 @@ export const PageContext = createContext<PageContextType>({
     setItemTax: () => {},
     globalTax: 8.25,
     atLeastOnePersonSelected: false,
+    user: undefined,
+    setUser: () => {},
 });
 
 export type PageContextType = {
@@ -27,6 +29,8 @@ export type PageContextType = {
     setItemTax: (id: number, tax: number) => void;
     globalTax: number;
     atLeastOnePersonSelected: boolean;
+    user: Person | undefined;
+    setUser: React.Dispatch<React.SetStateAction<Person | undefined>>;
 };
 
 export interface ItemsState {
@@ -44,6 +48,7 @@ export interface Item {
 export interface Person {
     name: string;
     id: number;
+    image?: string;
 }
 
 // Create a Context Provider component
@@ -55,6 +60,8 @@ export const PageProvider = ({ children }: { children: React.ReactNode }) => {
     const [itemsState, setItemsState] = useState<ItemsState[]>([]);
     const [atLeastOnePersonSelected, setAtLeastOnePersonSelected] =
         useState<boolean>(false);
+    const [user, setUser] = useState<Person>();
+
     const setItemlocalSelectedPersons = (id: number, persons: Person[]) => {
         const newItemsState = [...itemsState];
         newItemsState[id].selectedPersons = persons;
@@ -94,6 +101,8 @@ export const PageProvider = ({ children }: { children: React.ReactNode }) => {
                 setItemTax,
                 globalTax,
                 atLeastOnePersonSelected,
+                user,
+                setUser,
             }}
         >
             {children}

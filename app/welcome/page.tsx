@@ -20,10 +20,9 @@ export default function Page() {
                         Check out new extension
                     </h6>
                 </div>
-
-                <NavBar />
-
                 <PageProvider>
+                    <NavBar />
+
                     <WelcomePageBody />
                 </PageProvider>
             </div>
