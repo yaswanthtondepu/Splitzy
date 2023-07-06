@@ -148,7 +148,7 @@ export default function CardWithForm({
                         <Button
                             onClick={() => removeLocalPerson(globalPerson)}
                             key={globalPerson.id}
-                            className="mt-2 mr-2"
+                            className="mt-2 mr-2 "
                         >
                             {globalPerson.id === user?.id
                                 ? "You"
@@ -159,7 +159,7 @@ export default function CardWithForm({
                             onClick={() => addLocalPerson(globalPerson)}
                             variant={"outline"}
                             key={globalPerson.id}
-                            className="mt-2 mr-2"
+                            className="mt-2 mr-2  "
                         >
                             {globalPerson.id === user?.id
                                 ? "You"

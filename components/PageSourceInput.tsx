@@ -38,25 +38,31 @@ export default function PageSourceInput() {
                     Source code is not valid please Enter a Valid Source Code
                 </AlertDescription>
             </Alert>
-            <h3 className=" text-2xl font-semibold tracking-tight mt-2 ">
-                Welcome,
-            </h3>
-            <h4 className=" text-md font-normal tracking-tight mb-6  ">
-                Paste the{" "}
-                <span className="text-pink-500">
-                    walmart orders source code
-                </span>{" "}
-                in the below text box
-            </h4>
-            <div className="grid w-full gap-2">
+            <div>
+                <h1 className=" text-[40px] font-semibold tracking-tight mt-2 ">
+                    Welcome,
+                </h1>
+                <h4 className=" text-xl font-normal tracking-tight mb-6  ">
+                    Paste the{" "}
+                    <span className="text-pink-500 font-medium">
+                        walmart orders source code
+                    </span>{" "}
+                    in the below text box
+                </h4>
+            </div>
+
+            <div className="flex flex-col h-80">
                 <Textarea
+                    className="h-96"
                     onChange={() => {
                         isError ? setIsError(false) : null;
                     }}
                     ref={textareaRef}
                     placeholder="Paste the source here"
                 />
-                <Button onClick={handleButton}>Submit</Button>
+                <Button className="mt-4 py-4 h-12" onClick={handleButton}>
+                    Submit
+                </Button>
             </div>
         </>
     );

@@ -71,7 +71,7 @@ export default function NavBar() {
                 height={50}
             />
             <Link href={"/"}>
-                <h2 className="scroll-m-20 pb-2 pr-72 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+                <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
                     Walmart split
                 </h2>
             </Link>
@@ -82,7 +82,7 @@ export default function NavBar() {
                 onMouseLeave={() => setShowMenu(false)}
             >
                 <Avatar>
-                    <AvatarImage src={user?.image} alt="NOne" />
+                    <AvatarImage src={user?.image} alt="None" />
                     <AvatarFallback>{user?.name[0]}</AvatarFallback>
                 </Avatar>
                 <h6 className="ml-2">Hello, {user?.name}</h6>
