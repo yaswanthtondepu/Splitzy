@@ -39,7 +39,7 @@ export default function SearchBar() {
     const [allFriends, setAllFriends] = useState<Person[]>([]);
     const { globalSelectedPersons, setGlobalSelectedPersons, user, setUser } =
         useContext(PageContext);
-    const allGroups = [];
+    const allGroups: any[]= [];
 
     const [isInputFocused, setInputFocused] = useState(false);
     const commandListRef = useRef<HTMLDivElement | null>(null);

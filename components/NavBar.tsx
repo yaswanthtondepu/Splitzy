@@ -71,7 +71,7 @@ export default function NavBar() {
                 height={50}
             />
             <Link href={"/"}>
-                <h2 className="scroll-m-20 pb-2 pr-72 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+                <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
                     Walmart split
                 </h2>
             </Link>

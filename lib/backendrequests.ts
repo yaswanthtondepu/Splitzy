@@ -100,7 +100,7 @@ export const getUser = async () => {
         let router = useRouter();
         router.push("/");
     }
-    const res = await fetch("http://localhost:3001/v2/get_current_user", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v2/get_current_user`, {
         headers: {
             token: access_token,
         },
