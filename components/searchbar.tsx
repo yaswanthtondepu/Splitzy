@@ -39,7 +39,7 @@ export default function SearchBar() {
     const [allFriends, setAllFriends] = useState<Person[]>([]);
     const { globalSelectedPersons, setGlobalSelectedPersons, user, setUser } =
         useContext(PageContext);
-    const allGroups = [];
+    const allGroups: any = [];
 
     const [isInputFocused, setInputFocused] = useState(false);
     const commandListRef = useRef<HTMLDivElement | null>(null);
@@ -98,7 +98,7 @@ export default function SearchBar() {
     return (
         <>
             {globalSelectedPersons?.length === 0 ? (
-                <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+                <h4 className="scroll-m-20 text-xl font-semibold tracking-tight ">
                     Please select a group or friend
                 </h4>
             ) : (
@@ -160,7 +160,7 @@ export default function SearchBar() {
                     </CommandGroup>
                     <CommandSeparator className="cursor-pointer" />
                     <CommandGroup heading="Groups">
-                        {allGroups.map((group) => (
+                        {allGroups.map((group: any) => (
                             <div
                                 key={group.name}
                                 onClick={() => {

@@ -15,6 +15,7 @@ export const PageContext = createContext<PageContextType>({
     setItemlocalSelectedPersons: () => {},
     setItemTax: () => {},
     globalTax: 8.25,
+    setGlobalTax: () => {},
     atLeastOnePersonSelected: false,
     user: undefined,
     setUser: () => {},
@@ -28,6 +29,7 @@ export type PageContextType = {
     setItemlocalSelectedPersons: (id: number, persons: Person[]) => void;
     setItemTax: (id: number, tax: number) => void;
     globalTax: number;
+    setGlobalTax: React.Dispatch<React.SetStateAction<number>>;
     atLeastOnePersonSelected: boolean;
     user: Person | undefined;
     setUser: React.Dispatch<React.SetStateAction<Person | undefined>>;
@@ -72,6 +74,7 @@ export const PageProvider = ({ children }: { children: React.ReactNode }) => {
         newItemsState[id].tax = tax;
         setItemsState(newItemsState);
     };
+
     const checkAtLeastOnePersonSelected = () => {
         const newAtLeastOnePersonSelected = itemsState.some((item) => {
             return item.selectedPersons.length > 0;
@@ -82,6 +85,13 @@ export const PageProvider = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         checkAtLeastOnePersonSelected();
     }, [itemsState]);
+    useEffect(() => {
+        itemsState.map((itemState, idx) => {
+            if (itemState.tax != 0) {
+                setItemTax(idx, globalTax);
+            }
+        });
+    }, [globalTax]);
 
     useEffect(() => {
         console.log("items state");
@@ -100,6 +110,7 @@ export const PageProvider = ({ children }: { children: React.ReactNode }) => {
                 setItemlocalSelectedPersons,
                 setItemTax,
                 globalTax,
+                setGlobalTax,
                 atLeastOnePersonSelected,
                 user,
                 setUser,
