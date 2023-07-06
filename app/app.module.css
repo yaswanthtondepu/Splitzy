@@ -1,0 +1,14 @@
+@keyframes backgroundClipAnimation {
+    0% {
+        background-clip: none;
+        -webkit-text-fill-color: transparent;
+    }
+    100% {
+        background-clip: text;
+        -webkit-text-fill-color: initial;
+    }
+}
+
+.animate-backgroundClip {
+    animation: backgroundClipAnimation 3s infinite;
+}

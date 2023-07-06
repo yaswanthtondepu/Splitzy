@@ -82,7 +82,7 @@ export default function NavBar() {
                 onMouseLeave={() => setShowMenu(false)}
             >
                 <Avatar>
-                    <AvatarImage src={user?.image} alt="NOne" />
+                    <AvatarImage src={user?.image} alt="None" />
                     <AvatarFallback>{user?.name[0]}</AvatarFallback>
                 </Avatar>
                 <h6 className="ml-2">Hello, {user?.name}</h6>

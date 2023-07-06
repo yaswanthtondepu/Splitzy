@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -10,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ReloadIcon } from "@radix-ui/react-icons";
 import { PageContext, PageContextType, Person } from "@/contexts/PageContext";
 import {
     Select,
@@ -24,6 +26,7 @@ import { Trash, Plus } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { commitSplit } from "@/lib/backendrequests";
 import { Expense, Payment } from "@/interfaces/interfaces";
+import { useRouter } from "next/navigation";
 
 export function CommitSplitDialog({ expenses }: { expenses: Expense[] }) {
     const [description, setDescription] = useState<string>("");
@@ -32,6 +35,44 @@ export function CommitSplitDialog({ expenses }: { expenses: Expense[] }) {
     const [individualPayments, setindividualPayments] = useState<Payment[]>([
         {},
     ]);
+    const router = useRouter();
+    const [loading, setLoading] = useState(false);
+    const handleCommit = async () => {
+        setLoading(true);
+        const res = await validate(
+            description,
+            expenses,
+            individualPayments,
+            commitSplit
+        );
+        if (res) {
+            if (res.error) {
+                alert(res.error);
+                setLoading(false);
+                return;
+            } else {
+                alert("Added  successfully You will be redirect to home page");
+                setLoading(false);
+                router.push("/");
+                router.refresh();
+                return;
+            }
+        } else {
+            setLoading(false);
+            return;
+        }
+    };
+    useEffect(() => {
+        const newindividualPayments = individualPayments.filter((payment) => {
+            return globalSelectedPersons.some((person) => {
+                return person.id === (payment as { person: Person }).person?.id;
+            });
+        });
+        if (newindividualPayments.length === 0) {
+            newindividualPayments.push({});
+        }
+        setindividualPayments(newindividualPayments);
+    }, [globalSelectedPersons]);
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -75,19 +116,14 @@ export function CommitSplitDialog({ expenses }: { expenses: Expense[] }) {
                 />
 
                 <DialogFooter>
-                    <Button
-                        onClick={async () => {
-                            console.log("committing");
-                            await validate(
-                                description,
-                                expenses,
-                                individualPayments,
-                                commitSplit
-                            );
-                        }}
-                    >
-                        Commit
-                    </Button>
+                    {loading ? (
+                        <Button disabled>
+                            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                            Please wait
+                        </Button>
+                    ) : (
+                        <Button onClick={handleCommit}>Commit</Button>
+                    )}
                 </DialogFooter>
             </DialogContent>
         </Dialog>
@@ -116,8 +152,7 @@ const validate = async (
         alert("Atleast one payer should be selected");
         return;
     }
-    const res = next(description, expenses, individualPayments);
-    console.log(res);
+    return next(description, expenses, individualPayments);
 };
 
 function SelectBox({
@@ -133,7 +168,7 @@ function SelectBox({
         name: string;
         amount: number;
     }[] = [];
-
+    const { user } = useContext<PageContextType>(PageContext);
     return (
         <Select value={value} onValueChange={onValueChange}>
             <SelectTrigger className="w-40 ">
@@ -144,10 +179,10 @@ function SelectBox({
                     <SelectLabel>Select a Person</SelectLabel>
                     {persons.map((person) => (
                         <SelectItem
-                            key={person.name}
+                            key={person.id}
                             value={person.id.toString()}
                         >
-                            {person.name}
+                            {person.id === user?.id ? "You" : person.name}
                         </SelectItem>
                     ))}
                 </SelectGroup>
@@ -163,7 +198,7 @@ function IndividualPaymentManager({
     individualPayments: Payment[];
     setindividualPayments: (individualPayments: Payment[]) => void;
 }) {
-    const { globalSelectedPersons, setGlobalSelectedPersons } =
+    const { user, globalSelectedPersons, setGlobalSelectedPersons } =
         useContext<PageContextType>(PageContext);
     const remainingPersons = () =>
         globalSelectedPersons.filter((globalPerson) => {

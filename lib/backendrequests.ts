@@ -4,7 +4,7 @@ import axios from "axios";
 import { redirect } from "next/navigation";
 import { useRouter } from "next/router";
 
-export const commitSplit = (
+export const parseTransaction = (
     description: string,
     expenses: Expense[],
     individualPayments: Payment[]
@@ -63,16 +63,36 @@ export const commitSplit = (
     });
 
     console.log(expense);
-    axios({
-        method: "post",
-        url: `${process.env.NEXT_PUBLIC_API_URL}/create_expense`,
-        headers: {
-            "content-type": "application/json",
-        },
-        data: {
-            expense: expense,
-        },
-    });
+    return expense;
+};
+
+export const commitSplit = async (
+    description: string,
+    expenses: Expense[],
+    individualPayments: Payment[]
+) => {
+    let access_token = get_access_token();
+    if (!access_token) {
+        alert("Login expired. Please login again");
+        let router = useRouter();
+        router.push("/");
+    }
+    const expense = parseTransaction(description, expenses, individualPayments);
+
+    const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/v2/create_expense`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                token: access_token,
+            },
+            body: JSON.stringify({
+                expense: expense,
+            }),
+        }
+    );
+    return res.json();
 };
 
 export const getFriends = async () => {
@@ -100,11 +120,14 @@ export const getUser = async () => {
         let router = useRouter();
         router.push("/");
     }
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v2/get_current_user`, {
-        headers: {
-            token: access_token,
-        },
-    });
+    const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/v2/get_current_user`,
+        {
+            headers: {
+                token: access_token,
+            },
+        }
+    );
     return res.json();
 };
 

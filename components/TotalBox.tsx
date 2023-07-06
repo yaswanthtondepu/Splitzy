@@ -9,8 +9,12 @@ import { Button } from "./ui/button";
 import { CommitSplitDialog } from "./CommitSplitDialog";
 
 export default function TotalBox() {
-    const { itemsState, globalSelectedPersons, atLeastOnePersonSelected } =
-        useContext<PageContextType>(PageContext);
+    const {
+        user,
+        itemsState,
+        globalSelectedPersons,
+        atLeastOnePersonSelected,
+    } = useContext<PageContextType>(PageContext);
     const expenses = individualExpenses(itemsState);
     console.log(expenses);
     return (
@@ -25,7 +29,12 @@ export default function TotalBox() {
                 return (
                     <div key={expense.person.id} className="flex">
                         {" "}
-                        <div className="flex-1"> {expense.person.name} </div>
+                        <div className="flex-1">
+                            {" "}
+                            {expense.person.id === user?.id
+                                ? "You"
+                                : expense.person.name}{" "}
+                        </div>
                         <div className="text-gray-600 font-bold ">
                             {" "}
                             {expense.amount}
