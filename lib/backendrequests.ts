@@ -79,19 +79,16 @@ export const commitSplit = async (
     }
     const expense = parseTransaction(description, expenses, individualPayments);
 
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/v2/create_expense`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                token: access_token,
-            },
-            body: JSON.stringify({
-                expense: expense,
-            }),
-        }
-    );
+    const res = await fetch(`/api/v2/create_expense`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            token: access_token,
+        },
+        body: JSON.stringify({
+            expense: expense,
+        }),
+    });
     return res.json();
 };
 
@@ -102,14 +99,14 @@ export const getFriends = async () => {
         let router = useRouter();
         router.push("/");
     }
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/v2/get_friends`,
-        {
-            headers: {
-                token: access_token,
-            },
-        }
-    );
+    const res = await fetch(`/api/v2/get_friends`, {
+        method: "POST",
+        headers: {
+            token: access_token,
+            contentType: "application/json",
+        },
+        body: JSON.stringify({}),
+    });
     return res.json();
 };
 
@@ -120,14 +117,13 @@ export const getUser = async () => {
         let router = useRouter();
         router.push("/");
     }
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/v2/get_current_user`,
-        {
-            headers: {
-                token: access_token,
-            },
-        }
-    );
+    const res = await fetch(`/api/v2/get_current_user`, {
+        method: "POST",
+        headers: {
+            token: access_token,
+        },
+        body: JSON.stringify({}),
+    });
     return res.json();
 };
 

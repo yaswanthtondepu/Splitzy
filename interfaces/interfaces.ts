@@ -34,3 +34,17 @@ export type Payment =
           amount: string;
       }
     | {};
+
+export interface IUser {
+    userId: string;
+    accessToken: string;
+}
+
+export interface IGroup {
+    id: string;
+    groups: [];
+}
+export interface IFriend {
+    id: string;
+    friends: [];
+}
