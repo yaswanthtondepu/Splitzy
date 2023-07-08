@@ -16,11 +16,10 @@ export default function WelcomePageBody() {
         typeof window !== "undefined"
             ? window.localStorage.getItem("access_token") || ""
             : "";
-
+    let router = useRouter();
     if (!access_token) {
         window.alert("Please login to continue");
 
-        let router = useRouter();
         router.push("/");
     }
 

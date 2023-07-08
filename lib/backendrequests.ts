@@ -71,12 +71,7 @@ export const commitSplit = async (
     expenses: Expense[],
     individualPayments: Payment[]
 ) => {
-    let access_token = get_access_token();
-    if (!access_token) {
-        alert("Login expired. Please login again");
-        let router = useRouter();
-        router.push("/");
-    }
+    
     const expense = parseTransaction(description, expenses, individualPayments);
 
     const res = await fetch(`/api/v2/create_expense`, {

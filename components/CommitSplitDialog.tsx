@@ -36,6 +36,7 @@ export function CommitSplitDialog({ expenses }: { expenses: Expense[] }) {
         {},
     ]);
     const router = useRouter();
+    
     const [loading, setLoading] = useState(false);
     const handleCommit = async () => {
         setLoading(true);

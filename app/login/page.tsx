@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
-import { useRouter,useSearchParams } from "next/navigation";
-import {  } from "next/router";
+import { useRouter, useSearchParams } from "next/navigation";
+import {} from "next/router";
 import { useEffect } from "react";
 
 export default function Login() {
@@ -21,6 +21,7 @@ export default function Login() {
             .catch((err) => {
                 console.log(err);
             });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return <p>Please wait... We are wrapping things up</p>;
