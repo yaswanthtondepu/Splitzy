@@ -1,4 +1,3 @@
-import User from "@/lib/api/models/user";
 import { verifyToken } from "@/lib/api/utils";
 import dbConnect from "@/lib/dbconnection";
 import axios from "axios";

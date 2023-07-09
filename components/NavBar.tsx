@@ -3,20 +3,12 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
-import { Button } from "./ui/button";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
+
 import { useContext } from "react";
 import { PageContext, PageContextType } from "@/contexts/PageContext";
 import { useRouter } from "next/navigation";
 import { getUser } from "@/lib/backendrequests";
+import UserOptionsMenu from "./UserOptionsMenu";
 export default function NavBar() {
     const [scrollPosition, setScrollPosition] = useState(0);
     const [showMenu, setShowMenu] = useState(false);
@@ -87,36 +79,11 @@ export default function NavBar() {
                 </Avatar>
                 <h6 className="ml-2">Hello, {user?.name}</h6>
                 {showMenu && (
-                    <div className="absolute right-2 top-10">
-                        <div className="bg-[#3e3d3d] px-5 py-2">
-                            <Dialog>
-                                <DialogTrigger asChild>
-                                    <Button variant="outline">Logout</Button>
-                                </DialogTrigger>
-                                <DialogContent className="sm:max-w-[425px]">
-                                    <DialogHeader>
-                                        <DialogTitle>Logout</DialogTitle>
-                                        <DialogDescription>
-                                            Are you sure you want to logout?
-                                        </DialogDescription>
-                                    </DialogHeader>
-                                    <DialogFooter>
-                                        <Button
-                                            type="button"
-                                            onClick={() => setShowMenu(false)}
-                                        >
-                                            Cancel
-                                        </Button>
-                                        <Button
-                                            type="submit"
-                                            onClick={handleLogout}
-                                        >
-                                            Logout
-                                        </Button>
-                                    </DialogFooter>
-                                </DialogContent>
-                            </Dialog>
-                        </div>
+                    <div className="absolute right-1 top-10 cursor-default">
+                        <UserOptionsMenu
+                            setShowMenu={setShowMenu}
+                            handleLogout={handleLogout}
+                        />
                     </div>
                 )}
             </div>

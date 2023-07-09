@@ -71,7 +71,7 @@ function GlobalTaxBox() {
                         className="cursor-pointer"
                         onClick={() => {
                             setInputFocused(false);
-                            if (tax == undefined || tax == null) {
+                            if (tax === undefined || tax === null || tax < 0 || tax > 100 || isNaN(tax)) {
                                 setGlobalTax(0);
                             } else {
                                 setGlobalTax(tax);

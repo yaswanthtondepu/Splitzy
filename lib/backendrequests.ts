@@ -78,7 +78,7 @@ export const commitSplit = async (
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            token: access_token,
+            token: get_access_token(),
         },
         body: JSON.stringify({
             expense: expense,

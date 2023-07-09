@@ -27,7 +27,7 @@ export default function Home() {
                     </h2>
                 </Link>
                 <div className="absolute right-4 flex">
-                    <Link
+                    <a
                         className="mr-4"
                         href={"https://github.com/yash1744/walmsplit-next"}
                     >
@@ -39,29 +39,15 @@ export default function Home() {
                             width={40}
                             height={40}
                         />
-                    </Link>
+                    </a>
 
                     {!access_token ? (
-                        <Link
+                        <a
                             className="cursor-pointer "
                             href={`https://secure.splitwise.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_SPLITWISE_API_TOKEN}`}
                         >
-                            <Link
-                                href={
-                                    "https://github.com/yash1744/walmsplit-next"
-                                }
-                            >
-                                {" "}
-                                <Image
-                                    className="rounded-full lg:mr-6 "
-                                    src={"/github-icon.svg"}
-                                    alt="None"
-                                    width={40}
-                                    height={40}
-                                />
-                            </Link>
                             <Button>Login to splitwise </Button>
-                        </Link>
+                        </a>
                     ) : (
                         <Link className="cursor-pointer" href="/welcome">
                             <Button variant={"outline"}>Go to app</Button>
