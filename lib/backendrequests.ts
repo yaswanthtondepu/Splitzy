@@ -92,9 +92,27 @@ export const getFriends = async () => {
     if (!access_token) {
         alert("Login expired. Please login again");
         let router = useRouter();
-        router.push("/");
+        router.replace("/");
     }
     const res = await fetch(`/api/v2/get_friends`, {
+        method: "POST",
+        headers: {
+            token: access_token,
+            contentType: "application/json",
+        },
+        body: JSON.stringify({}),
+    });
+    return res.json();
+};
+
+export const getGroups = async () => {
+    let access_token = get_access_token();
+    if (!access_token) {
+        alert("Login expired. Please login again");
+        let router = useRouter();
+        router.replace("/");
+    }
+    const res = await fetch(`/api/v2/get_groups`, {
         method: "POST",
         headers: {
             token: access_token,

@@ -52,23 +52,29 @@ function GlobalTaxBox() {
     const [tax, setTax] = useState(globalTax);
     const [isInputFocused, setInputFocused] = useState(false);
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col py-5 px-2">
             {isInputFocused ? (
-                <div className="flex ">
+                <div className="flex items-center gap-2">
                     <Input
                         type="number"
                         value={tax}
                         onChange={(e) => {
-                            if (e.target.value.length > 0) {
+                            if (Number(e.target.value) >=0 && Number(e.target.value) <= 100) {
                                 setTax(parseFloat(e.target.value));
                             } else {
                                 setTax(0);
                             }
+
+                            if(e.target.value.trim() === "") {
+                                setTax(0);
+                            }
                         }}
                         required
+                        autoFocus
+                        className="w-32"
                     ></Input>
                     <Save
-                        className="cursor-pointer"
+                        className="cursor-pointer h-8 w-8"
                         onClick={() => {
                             setInputFocused(false);
                             if (tax === undefined || tax === null || tax < 0 || tax > 100 || isNaN(tax)) {
@@ -80,8 +86,8 @@ function GlobalTaxBox() {
                     ></Save>
                 </div>
             ) : (
-                <div className="flex ">
-                    <p className="text-2xl mr-4 font-bold">{`Global Tax: ${globalTax}`}</p>
+                <div className="flex items-center">
+                    <p className="text-2xl mr-4 font-bold">{`Tax Percentage: ${globalTax}`}</p>
                     <Edit
                         className="cursor-pointer"
                         onClick={() => setInputFocused(true)}

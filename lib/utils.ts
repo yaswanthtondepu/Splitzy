@@ -5,13 +5,17 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
+export function findItemsTotal (expenses:any) {
+   return parseFloat( expenses.reduce((accumulator:any, expense:any) =>accumulator + expense.amount,0).toFixed(2))
+}
+
 // export function individualExpenses(itemState: ItemState[]) {
 //     const totalExpenses: Expense[] = [];
 //     itemState.forEach((itemState) => {
 //         const { item, selectedPersons } = itemState;
 //         selectedPersons.forEach((person) => {
 //             if (
-//                 !totalExpenses.some((expense) => expense.person === person.name)
+//              !totalExpenses.some((expense) => expense.person === person.name)
 //             ) {
 //                 totalExpenses.push({
 //                     person: person.name,

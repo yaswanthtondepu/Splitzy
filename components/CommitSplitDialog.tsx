@@ -27,6 +27,8 @@ import { useContext, useEffect, useState } from "react";
 import { commitSplit } from "@/lib/backendrequests";
 import { Expense, Payment } from "@/interfaces/interfaces";
 import { useRouter } from "next/navigation";
+import { findItemsTotal } from "@/lib/utils";
+import { isNumber } from "tailwind-merge/dist/lib/validators";
 
 export function CommitSplitDialog({ expenses }: { expenses: Expense[] }) {
     const [description, setDescription] = useState<string>("");
@@ -36,7 +38,7 @@ export function CommitSplitDialog({ expenses }: { expenses: Expense[] }) {
         {},
     ]);
     const router = useRouter();
-    
+
     const [loading, setLoading] = useState(false);
     const handleCommit = async () => {
         setLoading(true);
@@ -100,6 +102,9 @@ export function CommitSplitDialog({ expenses }: { expenses: Expense[] }) {
                         />
                     </div>
                 </div>
+                <h6 className="text-base font-bold">
+                    Total: {findItemsTotal(expenses)}
+                </h6>
                 <h6 className="text-sm font-semibold">Paid By:</h6>
 
                 {/* <div className="">
@@ -112,6 +117,7 @@ export function CommitSplitDialog({ expenses }: { expenses: Expense[] }) {
                     <Trash />
                      */}
                 <IndividualPaymentManager
+                    expenses={expenses}
                     individualPayments={individualPayments}
                     setindividualPayments={setindividualPayments}
                 />
@@ -137,7 +143,7 @@ const validate = async (
     individualPayments: Payment[],
     next: Function
 ) => {
-    if (description === "") {
+    if (description.trim() === "") {
         alert("Description cannot be empty");
         return;
     }
@@ -195,9 +201,11 @@ function SelectBox({
 function IndividualPaymentManager({
     individualPayments,
     setindividualPayments,
+    expenses,
 }: {
     individualPayments: Payment[];
     setindividualPayments: (individualPayments: Payment[]) => void;
+    expenses: Expense[];
 }) {
     const { user, globalSelectedPersons, setGlobalSelectedPersons } =
         useContext<PageContextType>(PageContext);
@@ -213,6 +221,18 @@ function IndividualPaymentManager({
         console.log(remainingPersons());
         console.log(individualPayments);
     });
+    let Total = findItemsTotal(expenses);
+    const [remainingAmount, setRemainingAmount] = useState(Total);
+
+    useEffect(() => {
+        console.log("individualPayments changed");
+        console.log(individualPayments);
+        let addedAmount = 0;
+        individualPayments.forEach((payment: any) => {
+            addedAmount += parseFloat(payment.amount);
+        });
+        setRemainingAmount(Total - addedAmount);
+    }, [individualPayments]);
 
     const changeAmount = (index: number, amount: string) => {
         const newindividualPayments = [...individualPayments];
@@ -250,79 +270,92 @@ function IndividualPaymentManager({
         setindividualPayments(newindividualPayments);
     };
     return (
-        <div>
-            {individualPayments.map((individualPayment, index) => {
-                return (
-                    <div
-                        key={index}
-                        className="flex justify-between items-center mb-4"
-                    >
-                        <div className="">
-                            <SelectBox
-                                onValueChange={(value) => {
-                                    changePerson(
-                                        index,
-                                        globalSelectedPersons.find(
-                                            (person) =>
-                                                person.id.toString() === value
-                                        ) as Person
-                                    );
-                                }}
-                                {...((
-                                    individualPayment as { person: Person }
-                                ).hasOwnProperty("person")
-                                    ? {
-                                          value: (
-                                              individualPayment as {
-                                                  person: Person;
-                                              }
-                                          ).person.id.toString(),
-                                      }
-                                    : {})}
-                                persons={
-                                    (
-                                        individualPayment as {
-                                            person: Person;
-                                        }
-                                    ).person
-                                        ? [
-                                              ...remainingPersons(),
-                                              (
+        <>
+            <div>
+                {individualPayments.map((individualPayment, index) => {
+                    return (
+                        <div
+                            key={index}
+                            className="flex justify-between items-center mb-4"
+                        >
+                            <div className="">
+                                <SelectBox
+                                    onValueChange={(value) => {
+                                        changePerson(
+                                            index,
+                                            globalSelectedPersons.find(
+                                                (person) =>
+                                                    person.id.toString() ===
+                                                    value
+                                            ) as Person
+                                        );
+                                    }}
+                                    {...((
+                                        individualPayment as { person: Person }
+                                    ).hasOwnProperty("person")
+                                        ? {
+                                              value: (
                                                   individualPayment as {
                                                       person: Person;
                                                   }
-                                              ).person,
-                                          ]
-                                        : [...remainingPersons()]
-                                }
-                            />
+                                              ).person.id.toString(),
+                                          }
+                                        : {})}
+                                    persons={
+                                        (
+                                            individualPayment as {
+                                                person: Person;
+                                            }
+                                        ).person
+                                            ? [
+                                                  ...remainingPersons(),
+                                                  (
+                                                      individualPayment as {
+                                                          person: Person;
+                                                      }
+                                                  ).person,
+                                              ]
+                                            : [...remainingPersons()]
+                                    }
+                                />
+                            </div>
+                            <div className="w-40">
+                                <Input
+                                    type="number"
+                                    id="name"
+                                    value={
+                                        (
+                                            individualPayment as {
+                                                amount: number;
+                                            }
+                                        ).amount
+                                    }
+                                    onChange={(e) => {
+                                        changeAmount(index, e.target.value);
+                                    }}
+                                    className="col-span-1"
+                                />
+                            </div>
+                            {individualPayments.length > 1 && (
+                                <Trash onClick={() => removeSelectBox(index)} />
+                            )}
                         </div>
-                        <div className="w-40">
-                            <Input
-                                type="number"
-                                id="name"
-                                value={
-                                    (individualPayment as { amount: number })
-                                        .amount
-                                }
-                                onChange={(e) => {
-                                    changeAmount(index, e.target.value);
-                                }}
-                                className="col-span-1"
-                            />
-                        </div>
-                        {individualPayments.length > 1 && (
-                            <Trash onClick={() => removeSelectBox(index)} />
-                        )}
+                    );
+                })}
+                {globalSelectedPersons.length !== individualPayments.length && (
+                    <Button onClick={addNewSelectBox} className="w-40 mt-4">
+                        <Plus className="mr-2" />
+                        Add Person
+                    </Button>
+                )}
+            </div>
+            <div>
+                {remainingAmount !== 0 && !Number.isNaN(remainingAmount) && (
+                    <div className="text-red-500">
+                        Remaining Amount: {remainingAmount.toFixed(2)}
                     </div>
-                );
-            })}
-            {globalSelectedPersons.length !== individualPayments.length && (
-                <Button onClick={addNewSelectBox} className="w-40 mt-4">
-                    <Plus className="mr-2" />
-                    Add Person
-                </Button>
-            )}
-        </div>
+                )}
+            </div>
+        </>
     );
 }

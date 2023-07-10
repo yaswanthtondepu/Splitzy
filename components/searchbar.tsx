@@ -7,6 +7,7 @@ import {
     Smile,
     User,
     GroupIcon,
+    X,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -28,7 +29,8 @@ import classNames from "classnames";
 import { useState, useEffect, useRef, useContext, use, cache } from "react";
 import useSWR from "swr";
 import { useRouter } from "next/navigation";
-import { getFriends } from "@/lib/backendrequests";
+import { getFriends, getGroups } from "@/lib/backendrequests";
+
 let access_token =
     typeof window !== "undefined"
         ? window.localStorage.getItem("access_token") || ""
@@ -39,8 +41,7 @@ export default function SearchBar() {
     const [allFriends, setAllFriends] = useState<Person[]>([]);
     const { globalSelectedPersons, setGlobalSelectedPersons, user, setUser } =
         useContext(PageContext);
-    const allGroups: any = [];
-
+    const [allGroups, setAllGroups] = useState([]);
     const [isInputFocused, setInputFocused] = useState(false);
     const commandListRef = useRef<HTMLDivElement | null>(null);
     const handleInputFocus = () => {
@@ -63,6 +64,19 @@ export default function SearchBar() {
         if (!present) {
             setGlobalSelectedPersons([...globalSelectedPersons, person]);
         }
+    };
+    const handleSelectGroup = (group: any) => {
+        const globalSelectedPersonsIds = globalSelectedPersons.map(
+            (obj) => obj.id
+        );
+        let groupMembersIds = group.members.map((obj: any) => obj.id);
+        groupMembersIds = groupMembersIds.filter(
+            (el: any) => !globalSelectedPersonsIds.includes(el)
+        );
+        const groupMembers = allFriends.filter((obj) =>
+            groupMembersIds.includes(obj.id)
+        );
+        setGlobalSelectedPersons([...globalSelectedPersons, ...groupMembers]);
     };
     const handleUnSelectItem = (person: Person) => {
         console.log(person);
@@ -93,33 +107,67 @@ export default function SearchBar() {
                 console.log(err);
             });
         console.log("setting user");
+
+        getGroups()
+            .then((data: any) => {
+                console.log(data);
+                setAllGroups(data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }, []);
 
     return (
         <>
-            {globalSelectedPersons?.length === 0 ? (
-                <h4 className="scroll-m-20 text-xl font-semibold tracking-tight ">
-                    Please select a group or friend
-                </h4>
-            ) : (
-                globalSelectedPersons?.map((person) => (
-                    <Button
-                        onClick={() => {
-                            handleUnSelectItem(person);
-                        }}
-                        key={person.id}
-                    >
-                        {person.id === user?.id ? "You" : person.name}
-                    </Button>
-                ))
-            )}
+            <div className="py-5 flex gap-3 flex-wrap">
+                {globalSelectedPersons?.length === 0 ? (
+                    <h4 className="scroll-m-20 text-xl font-semibold tracking-tight ">
+                        Please select a group or friend
+                    </h4>
+                ) : (
+                    globalSelectedPersons?.map((person) => (
+                        <div
+                            className="flex justify-between items-center"
+                            key={person.id}
+                        >
+                            {person.id !== user?.id ? (
+                                <>
+                                    <Button
+                                        className="border-r-0 rounded-r-none cursor-default"
+                                        key={person.id}
+                                    >
+                                        {person.id === user?.id
+                                            ? "You"
+                                            : person.name}
+                                    </Button>
+                                    <div
+                                        className="px-2 flex items-center h-10 bg-black text-white rounded-r-md border-l-0 cursor-pointer hover:opacity-80"
+                                        onClick={() => {
+                                            handleUnSelectItem(person);
+                                        }}
+                                    >
+                                        <X className=" w-7" key={person.id} />
+                                    </div>
+                                </>
+                            ) : (
+                                <Button className="cursor-default">
+                                    {person.id === user?.id
+                                        ? "You"
+                                        : person.name}
+                                </Button>
+                            )}
+                        </div>
+                    ))
+                )}
+            </div>
             <Command
                 ref={commandListRef}
                 className="rounded-lg border shadow-md"
             >
                 <CommandInput
                     onFocus={() => setInputFocused(true)}
-                    placeholder="Enter group or friend name.."
+                    placeholder="Enter group or friend name..."
                 />
                 <CommandList
                     className={classNames(
@@ -162,16 +210,19 @@ export default function SearchBar() {
                     <CommandGroup heading="Groups">
                         {allGroups.map((group: any) => (
                             <div
-                                key={group.name}
+                                className="cursor-pointer"
+                                key={group.id}
                                 onClick={() => {
-                                    handleSelectitem(group);
+                                    handleSelectGroup(group);
                                 }}
                             >
                                 <CommandItem>
-                                    <GroupIcon className="mr-2 h-4 w-4" />
-                                    <span className="cursor-pointer">
-                                        {group.name}
-                                    </span>
+                                    <div className="flex flex-row py-4 cursor-pointer">
+                                        <GroupIcon className="mr-2 h-6 w-6" />
+                                        <span className="text-base">
+                                            {group.name}
+                                        </span>
+                                    </div>
                                 </CommandItem>
                             </div>
                         ))}

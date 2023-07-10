@@ -12,7 +12,7 @@ const groupsSchema = new mongoose.Schema<IGroup>({
 });
 
 // Create the user model
-const Group = mongoose.model("Group", groupsSchema);
+const Group = mongoose.models.Group || mongoose.model("Group", groupsSchema)
 
 // Export the model
 export default Group;

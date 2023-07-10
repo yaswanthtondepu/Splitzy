@@ -7,6 +7,7 @@ import {
 } from "../contexts/PageContext";
 import { Button } from "./ui/button";
 import { CommitSplitDialog } from "./CommitSplitDialog";
+import { findItemsTotal } from "@/lib/utils";
 
 export default function TotalBox() {
     const {
@@ -47,15 +48,7 @@ export default function TotalBox() {
                     Total
                 </div>{" "}
                 <div className="font-bold">
-                    {parseFloat(
-                        expenses
-                            .reduce(
-                                (accumulator, expense) =>
-                                    accumulator + expense.amount,
-                                0
-                            )
-                            .toFixed(2)
-                    )}
+                    {findItemsTotal(expenses)}
                 </div>
             </div>
             <CommitSplitDialog expenses={expenses} />

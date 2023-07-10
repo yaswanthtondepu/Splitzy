@@ -114,6 +114,7 @@ export const fetchFriendsSplitWise = async (accessToken: string) => {
     return ans;
 };
 
+
 export async function verifyToken(request: NextRequest) {
     const expiryTime = 60 * 60 * 24 * 3;
 
