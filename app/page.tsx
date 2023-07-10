@@ -15,9 +15,9 @@ export default function Home() {
                 className={`bg-white p-4  sticky z-10 top-0  left-0 right-0 text-center border-b align-center items-center flex justify-center `}
             >
                 <Image
-                    className="absolute left-4"
-                    src={"/walmart-icon.svg"}
-                    alt="Walmart Logo"
+                    className="absolute left-4 rounded-md"
+                    src={"/walmart-split.jpg"}
+                    alt="Walmart Split Logo"
                     width={50}
                     height={50}
                 />
