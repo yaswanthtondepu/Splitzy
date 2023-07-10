@@ -9,6 +9,7 @@ import { PageContext, PageContextType } from "@/contexts/PageContext";
 import { useRouter } from "next/navigation";
 import { getUser } from "@/lib/backendrequests";
 import UserOptionsMenu from "./UserOptionsMenu";
+import { ThreeDots } from "react-loader-spinner";
 export default function NavBar() {
     const [scrollPosition, setScrollPosition] = useState(0);
     const [showMenu, setShowMenu] = useState(false);
@@ -75,18 +76,34 @@ export default function NavBar() {
                 onMouseOver={() => setShowMenu(true)}
                 onMouseLeave={() => setShowMenu(false)}
             >
-                <Avatar>
-                    <AvatarImage src={user?.image} alt="None" />
-                    <AvatarFallback>{user?.name[0]}</AvatarFallback>
-                </Avatar>
-                <h6 className="ml-2">Hello, {user?.name}</h6>
-                {showMenu && (
-                    <div className="absolute right-1 top-10 cursor-default">
-                        <UserOptionsMenu
-                            setShowMenu={setShowMenu}
-                            handleLogout={handleLogout}
+                {user ? (
+                    <>
+                        <Avatar>
+                            <AvatarImage src={user?.image} alt="None" />
+                            <AvatarFallback>{user?.name[0]}</AvatarFallback>
+                        </Avatar>
+                        <h6 className="ml-2">Hello, {user?.name}</h6>
+                        {showMenu && (
+                            <div className="absolute right-1 top-10 cursor-default">
+                                <UserOptionsMenu
+                                    setShowMenu={setShowMenu}
+                                    handleLogout={handleLogout}
+                                />
+                            </div>
+                        )}
+                    </>
+                ) : (
+                    <>
+                        <ThreeDots
+                            height="60"
+                            width="60"
+                            radius="9"
+                            color="#000000"
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            visible={true}
                         />
-                    </div>
+                    </>
                 )}
             </div>
         </div>
