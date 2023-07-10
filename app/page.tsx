@@ -2,13 +2,21 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
-import styles from "./app.module.css";
-let access_token =
-    typeof window !== "undefined"
-        ? window.localStorage.getItem("access_token") || ""
-        : "";
+import { useEffect, useState } from "react";
+
 
 export default function Home() {
+     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    useEffect(() => {
+        let access_token =
+            typeof window !== "undefined"
+                ? window.localStorage.getItem("access_token") || ""
+                : "";
+        if (access_token.length > 0) {
+            setIsAuthenticated(true);
+        }
+        
+    }, []);
     return (
         <div>
             <div
@@ -41,7 +49,7 @@ export default function Home() {
                         />
                     </a>
 
-                    {!access_token ? (
+                    {!isAuthenticated ? (
                         <a
                             className="cursor-pointer "
                             href={`https://secure.splitwise.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_SPLITWISE_API_TOKEN}`}
@@ -69,16 +77,19 @@ export default function Home() {
                     Effortlessly Split and Share Walmart Expenses via Splitwise
                     directly on the web
                 </h2>
-                <Button className="mt-4" 
+                <Button
+                    className="mt-4"
                     onClick={() => {
-                        if(!access_token){
-                            window.location.href = `https://secure.splitwise.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_SPLITWISE_API_TOKEN}`
-                        }else{
-                            window.location.href = "/welcome"
+                        if (!isAuthenticated) {
+                            window.location.href = `https://secure.splitwise.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_SPLITWISE_API_TOKEN}`;
+                        } else {
+                            window.location.href = "/welcome";
                         }
                     }}
-
-                > Get Started</Button>
+                >
+                    {" "}
+                    Get Started
+                </Button>
             </div>
         </div>
     );
