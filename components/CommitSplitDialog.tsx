@@ -355,6 +355,9 @@ function IndividualPaymentManager({
                         Remaining Amount: {remainingAmount.toFixed(2)}
                     </div>
                 )}
+                {remainingAmount === 0 && (
+                    <div className="text-green-500">Total balanced. Please continue</div>
+                )}
             </div>
         </>
     );
