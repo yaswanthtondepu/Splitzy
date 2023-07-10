@@ -75,6 +75,8 @@ export function CommitSplitDialog({ expenses }: { expenses: Expense[] }) {
             newindividualPayments.push({});
         }
         setindividualPayments(newindividualPayments);
+
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [globalSelectedPersons]);
     return (
         <Dialog>
@@ -232,7 +234,7 @@ function IndividualPaymentManager({
             addedAmount += parseFloat(payment.amount);
         });
         setRemainingAmount(Total - addedAmount);
-    }, [individualPayments]);
+    }, [individualPayments, Total]);
 
     const changeAmount = (index: number, amount: string) => {
         const newindividualPayments = [...individualPayments];

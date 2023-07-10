@@ -23,7 +23,7 @@ export default function NavBar() {
 
         window.addEventListener("scroll", handleScroll);
 
-        getUser()
+        getUser(router)
             .then((data: any) => {
                 console.log(data);
                 const user = {
@@ -42,6 +42,7 @@ export default function NavBar() {
         return () => {
             window.removeEventListener("scroll", handleScroll);
         };
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     const handleLogout = () => {
         window.localStorage.removeItem("access_token");

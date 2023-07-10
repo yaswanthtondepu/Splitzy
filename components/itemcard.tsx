@@ -18,6 +18,7 @@ import { Separator } from "@/components/ui/separator";
 import { PageContext, PageContextType } from "../contexts/PageContext";
 import { useContext, useState } from "react";
 import { Item, Person } from "../contexts/PageContext";
+import Image from "next/image";
 export default function CardWithForm({
     id,
     item,
@@ -75,6 +76,7 @@ export default function CardWithForm({
             });
             setLocalSelectedPersons(newlocalpersons);
         }
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [globalSelectedPersons]);
     React.useEffect(() => {
         console.log(`${name} rendered`);
@@ -85,10 +87,18 @@ export default function CardWithForm({
         localSelectedPersons.length !== 0
             ? setSelectAll(true)
             : setSelectAll(false);
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [localSelectedPersons]);
     return (
         <Card className="w-72">
-            <img className="w-full h-48 object-cover" src={image} alt=""></img>
+            {/* <img className="w-full h-48 object-cover" src={image} alt=""></img> */}
+            <Image
+                className="w-full h-48 object-cover"
+                height={192}
+                width={288}
+                src={image}
+                alt=""
+            ></Image>
             <Separator />
 
             <CardHeader className="pb-2 pt-0">

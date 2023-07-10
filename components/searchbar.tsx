@@ -38,6 +38,7 @@ let access_token =
 
 export default function SearchBar() {
     console.log("iam running successfully");
+    let router = useRouter();
     const [allFriends, setAllFriends] = useState<Person[]>([]);
     const { globalSelectedPersons, setGlobalSelectedPersons, user, setUser } =
         useContext(PageContext);
@@ -98,7 +99,7 @@ export default function SearchBar() {
     }, []);
 
     useEffect(() => {
-        getFriends()
+        getFriends(router)
             .then((data: Person[]) => {
                 console.log(data);
                 setAllFriends(data);
@@ -108,7 +109,7 @@ export default function SearchBar() {
             });
         console.log("setting user");
 
-        getGroups()
+        getGroups(router)
             .then((data: any) => {
                 console.log(data);
                 setAllGroups(data);
@@ -116,6 +117,7 @@ export default function SearchBar() {
             .catch((err) => {
                 console.log(err);
             });
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

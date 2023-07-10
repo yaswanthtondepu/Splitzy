@@ -1,6 +1,7 @@
 import { Expense, ItemState } from "@/interfaces/interfaces";
 import { Person, Payment } from "@/interfaces/interfaces";
 import axios from "axios";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
 import { redirect } from "next/navigation";
 import { useRouter } from "next/router";
 
@@ -87,11 +88,10 @@ export const commitSplit = async (
     return res.json();
 };
 
-export const getFriends = async () => {
+export const getFriends = async (router: AppRouterInstance) => {
     let access_token = get_access_token();
     if (!access_token) {
         alert("Login expired. Please login again");
-        let router = useRouter();
         router.replace("/");
     }
     const res = await fetch(`/api/v2/get_friends`, {
@@ -105,11 +105,10 @@ export const getFriends = async () => {
     return res.json();
 };
 
-export const getGroups = async () => {
+export const getGroups = async (router: AppRouterInstance) => {
     let access_token = get_access_token();
     if (!access_token) {
         alert("Login expired. Please login again");
-        let router = useRouter();
         router.replace("/");
     }
     const res = await fetch(`/api/v2/get_groups`, {
@@ -123,11 +122,10 @@ export const getGroups = async () => {
     return res.json();
 };
 
-export const getUser = async () => {
+export const getUser = async (router: AppRouterInstance) => {
     let access_token = get_access_token();
     if (!access_token) {
         alert("Login expired. Please login again");
-        let router = useRouter();
         router.push("/");
     }
     const res = await fetch(`/api/v2/get_current_user`, {
