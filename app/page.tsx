@@ -69,7 +69,16 @@ export default function Home() {
                     Effortlessly Split and Share Walmart Expenses via Splitwise
                     directly on the web
                 </h2>
-                <Button className="mt-4"> Get Started</Button>
+                <Button className="mt-4" 
+                    onClick={() => {
+                        if(!access_token){
+                            window.location.href = `https://secure.splitwise.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_SPLITWISE_API_TOKEN}`
+                        }else{
+                            window.location.href = "/welcome"
+                        }
+                    }}
+
+                > Get Started</Button>
             </div>
         </div>
     );
