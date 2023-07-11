@@ -17,7 +17,7 @@ export default function TotalBox() {
         atLeastOnePersonSelected,
     } = useContext<PageContextType>(PageContext);
     const expenses = individualExpenses(itemsState);
-    console.log(expenses);
+
     return (
         <div
             className={` transition-all ${
@@ -26,7 +26,7 @@ export default function TotalBox() {
         >
             <div className="font-bold mb-4 ">Overall Expenses</div>
             {expenses.map((expense) => {
-                // console.log(allPersons);
+
                 return (
                     <div key={expense.person.id} className="flex">
                         {" "}

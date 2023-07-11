@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
         if (error) {
             return NextResponse.json({ error });
         } else {
-            console.log(user);
+
             const userresponse = await axios.get(
                 "https://secure.splitwise.com/api/v3.0/get_current_user",
                 {
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
             }
         }
     } catch (error) {
-        console.log(error);
+
         return NextResponse.json(
             {
                 error: error,

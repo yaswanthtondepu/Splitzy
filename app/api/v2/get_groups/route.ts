@@ -1,6 +1,5 @@
 import { fetchGroupsSplitWise, verifyToken } from "@/lib/api/utils";
 import dbConnect from "@/lib/dbconnection";
-
 import { NextRequest, NextResponse } from "next/server";
 import Group from "@/lib/api/models/groups";
 
@@ -33,7 +32,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json(newusergroups.groups, { status: 200 });
         }
     } catch (error) {
-        console.log(error);
+
         return NextResponse.json(
             {
                 error: error,

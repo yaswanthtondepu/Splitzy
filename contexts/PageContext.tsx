@@ -93,11 +93,6 @@ export const PageProvider = ({ children }: { children: React.ReactNode }) => {
         });
     }, [globalTax]);
 
-    useEffect(() => {
-        console.log("items state");
-        console.log("provider rendering");
-        console.log(itemsState);
-    });
     return (
         <PageContext.Provider
             value={{

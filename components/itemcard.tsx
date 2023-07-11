@@ -43,7 +43,7 @@ export default function CardWithForm({
     const [localSelectedPersons, setLocalSelectedPersons] = useState<Person[]>(
         []
     );
-    console.log(localSelectedPersons);
+
     const removeLocalPerson = (globalPerson: Person) => {
         setLocalSelectedPersons(
             localSelectedPersons.filter(
@@ -78,9 +78,7 @@ export default function CardWithForm({
         }
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [globalSelectedPersons]);
-    React.useEffect(() => {
-        console.log(`${name} rendered`);
-    });
+
     React.useEffect(() => {
         setItemlocalSelectedPersons(id, localSelectedPersons);
         localSelectedPersons.length === globalSelectedPersons.length &&
@@ -137,20 +135,6 @@ export default function CardWithForm({
             </CardContent>
             {/* <Separator /> */}
             <CardFooter className="flex-wrap mt-4 ">
-                {/* <Badge  className="mt-2 mr-2 bg-red-500 ">
-                    Arrely v
-                </Badge>
-                <Badge className="mt-2 mr-2 bg-purple-500">Divya</Badge>
-
-                <Badge className="mt-2 mr-2  bg-blue-500 ">
-                    Divya K
-                </Badge>
-                <Badge  className="mt-2 mr-2 bg-yellow-600">
-                    Yashwanth
-                </Badge>
-                <Badge className="mt-2 mr-2  to-pink-500">
-                    Krishna S
-                </Badge> */}
                 {globalSelectedPersons.map((globalPerson) =>
                     persons.some(
                         (localPerson) => localPerson.id === globalPerson.id
@@ -177,27 +161,6 @@ export default function CardWithForm({
                         </Button>
                     )
                 )}
-
-                {/* <Badge className="mt-2 mr-2">Likitha</Badge>
-                <Badge variant="outline" className="mt-2 mr-2">
-                    Yashwanth
-                </Badge>
-                <Badge
-                    onClick={() => {
-                        console.log("hello");
-                    }}
-                    className="mt-2 mr-2"
-                >
-                    Divya
-                </Badge>
-
-                <Badge className="mt-2 mr-2">Deployment</Badge>
-                <Badge variant="outline" className="mt-2 mr-2">
-                    Yashwanth
-                </Badge>
-                <Badge className="mt-2 mr-2">Divya</Badge>
-
-                <Badge className="mt-2 mr-2">Deployment</Badge> */}
             </CardFooter>
         </Card>
     );

@@ -219,16 +219,12 @@ function IndividualPaymentManager({
                     globalPerson.name
             );
         });
-    useEffect(() => {
-        console.log(remainingPersons());
-        console.log(individualPayments);
-    });
+
     let Total = findItemsTotal(expenses);
     const [remainingAmount, setRemainingAmount] = useState(Total);
 
     useEffect(() => {
-        console.log("individualPayments changed");
-        console.log(individualPayments);
+
         let addedAmount = 0;
         individualPayments.forEach((payment: any) => {
             addedAmount += parseFloat(payment.amount);
@@ -246,8 +242,7 @@ function IndividualPaymentManager({
         setindividualPayments(newindividualPayments);
     };
     const changePerson = (index: number, person: Person) => {
-        console.log("running");
-        console.log(person);
+
         const newindividualPayments = [...individualPayments];
         if (Object.keys(newindividualPayments[index]).length !== 0)
             newindividualPayments[index] = {

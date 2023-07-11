@@ -26,7 +26,6 @@ export default function NavBar() {
 
         getUser(router)
             .then((data: any) => {
-                console.log(data);
                 const user = {
                     name:
                         (data.first_name ?? "") + " " + (data.last_name ?? ""),

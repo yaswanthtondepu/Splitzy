@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 
 export default function Page() {
     const searchParams = useSearchParams();
-    console.log(searchParams.get("key"));
+
     return (
         <>
             <div className="h-screen flex flex-col">

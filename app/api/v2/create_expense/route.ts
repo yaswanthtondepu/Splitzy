@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
                     params: body.expense,
                 }
             );
-            console.log(result.data);
+
             if (Object.keys(result.data?.errors).length) {
                 return NextResponse.json(
                     { error: result.data.errors.base },
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json(result.data, { status: 200 });
         }
     } catch (error) {
-        console.log(error);
+
         return NextResponse.json(
             {
                 error: error,

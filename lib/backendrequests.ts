@@ -10,7 +10,7 @@ export const parseTransaction = (
     expenses: Expense[],
     individualPayments: Payment[]
 ) => {
-    console.log({ expenses, individualPayments });
+
     const total = expenses.reduce((acc, expense) => acc + expense.amount, 0);
     const expense: any = {
         cost: total,
@@ -63,7 +63,7 @@ export const parseTransaction = (
         expense[`users__${idx}__owed_share`] = transaction.owed_share;
     });
 
-    console.log(expense);
+
     return expense;
 };
 

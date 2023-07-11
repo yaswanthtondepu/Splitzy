@@ -37,7 +37,6 @@ let access_token =
         : "";
 
 export default function SearchBar() {
-    console.log("iam running successfully");
     let router = useRouter();
     const [allFriends, setAllFriends] = useState<Person[]>([]);
     const { globalSelectedPersons, setGlobalSelectedPersons, user, setUser } =
@@ -57,11 +56,10 @@ export default function SearchBar() {
         }
     };
     const handleSelectitem = (person: Person) => {
-        console.log(person);
         const present = globalSelectedPersons.some(
             (obj) => obj.id === person.id
         );
-        console.log(present);
+
         if (!present) {
             setGlobalSelectedPersons([...globalSelectedPersons, person]);
         }
@@ -80,14 +78,11 @@ export default function SearchBar() {
         setGlobalSelectedPersons([...globalSelectedPersons, ...groupMembers]);
     };
     const handleUnSelectItem = (person: Person) => {
-        console.log(person);
         if (person.id !== user?.id) {
             const newglobalSelectedPersons = globalSelectedPersons.filter(
                 (obj) => obj.id !== person.id
             );
             setGlobalSelectedPersons(newglobalSelectedPersons);
-        } else {
-            console.log("you cannot remove yourself");
         }
     };
 
@@ -101,66 +96,69 @@ export default function SearchBar() {
     useEffect(() => {
         getFriends(router)
             .then((data: Person[]) => {
-                console.log(data);
                 setAllFriends(data);
             })
-            .catch((err) => {
-                console.log(err);
-            });
-        console.log("setting user");
+            .catch((err) => {});
 
         getGroups(router)
             .then((data: any) => {
-                console.log(data);
                 setAllGroups(data);
             })
-            .catch((err) => {
-                console.log(err);
-            });
+            .catch((err) => {});
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
         <>
-            <div className="py-5 flex gap-3 flex-wrap">
+            <div>
                 {globalSelectedPersons?.length === 0 ? (
                     <h4 className="scroll-m-20 text-xl font-semibold tracking-tight ">
                         Please select a group or friend
                     </h4>
                 ) : (
-                    globalSelectedPersons?.map((person) => (
-                        <div
-                            className="flex justify-between items-center"
-                            key={person.id}
-                        >
-                            {person.id !== user?.id ? (
-                                <>
-                                    <Button
-                                        className="border-r-0 rounded-r-none cursor-default"
-                                        key={person.id}
-                                    >
-                                        {person.id === user?.id
-                                            ? "You"
-                                            : person.name}
-                                    </Button>
-                                    <div
-                                        className="px-2 flex items-center h-10 bg-black text-white rounded-r-md border-l-0 cursor-pointer hover:opacity-80"
-                                        onClick={() => {
-                                            handleUnSelectItem(person);
-                                        }}
-                                    >
-                                        <X className=" w-7" key={person.id} />
-                                    </div>
-                                </>
-                            ) : (
-                                <Button className="cursor-default">
-                                    {person.id === user?.id
-                                        ? "You"
-                                        : person.name}
-                                </Button>
-                            )}
+                    <div>
+                        <h1 className="text-xl mr-4 font-semibold tracking-tight ">
+                            Selected Persons:
+                        </h1>
+                        <div className="py-5 flex gap-3 flex-wrap">
+                            {globalSelectedPersons?.map((person) => (
+                                <div
+                                    className="flex justify-between items-center"
+                                    key={person.id}
+                                >
+                                    {person.id !== user?.id ? (
+                                        <>
+                                            <Button
+                                                className="border-r-0 rounded-r-none cursor-default"
+                                                key={person.id}
+                                            >
+                                                {person.id === user?.id
+                                                    ? "You"
+                                                    : person.name}
+                                            </Button>
+                                            <div
+                                                className="px-2 flex items-center h-10 bg-black text-white rounded-r-md border-l-0 cursor-pointer hover:opacity-80"
+                                                onClick={() => {
+                                                    handleUnSelectItem(person);
+                                                }}
+                                            >
+                                                <X
+                                                    className=" w-7"
+                                                    key={person.id}
+                                                />
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <Button className="cursor-default">
+                                            {person.id === user?.id
+                                                ? "You"
+                                                : person.name}
+                                        </Button>
+                                    )}
+                                </div>
+                            ))}
                         </div>
-                    ))
+                    </div>
                 )}
             </div>
             <Command

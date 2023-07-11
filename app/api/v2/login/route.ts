@@ -8,8 +8,15 @@ export async function POST(request: NextRequest, response: NextResponse) {
     try {
         await dbConnect();
         const body = await request.json();
-        console.log("authorization "+body.authorizationCode);
-        
+
+        if (!body.authorizationCode) {
+            return NextResponse.json(
+                {
+                    error: "authorization code not found",
+                },
+                { status: 400 }
+            );
+        }
         const tokenresponse = await axios.post(
             "https://secure.splitwise.com/oauth/token",
             {
@@ -21,8 +28,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
             }
         );
 
-        console.log(tokenresponse.data);
-        
+
 
         const splitwisebearer = "Bearer " + tokenresponse.data?.access_token;
         const userresponse = await axios.get(
@@ -44,7 +50,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
             throw new Error("unauthorized: access token is invalid");
         }
     } catch (error) {
-        console.log(error);
+
         return NextResponse.json(
             {
                 error: error,

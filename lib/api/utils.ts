@@ -130,7 +130,7 @@ export async function verifyToken(request: NextRequest) {
 
     const user = await User.findOne({ userId: JSON.parse(decoded).id });
 
-    console.log(decryptedToken.iat);
+
     if (decryptedToken.iat < Math.floor(user?.updatedAt.getTime() / 1000)) {
         return { error: "Token expired" };
     }
