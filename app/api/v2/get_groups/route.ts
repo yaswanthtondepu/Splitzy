@@ -12,7 +12,8 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error });
         } else {
             const body = await request.json();
-            const force = body.force;
+            // const force = body.force;
+            const force = true;
             if (!force) {
                 const usergroups = await Group.findOne({ id: user.id });
                 if (usergroups) {
@@ -32,7 +33,6 @@ export async function POST(request: NextRequest) {
             return NextResponse.json(newusergroups.groups, { status: 200 });
         }
     } catch (error) {
-
         return NextResponse.json(
             {
                 error: error,

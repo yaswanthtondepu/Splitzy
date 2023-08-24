@@ -14,7 +14,8 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error });
         } else {
             const body = await request.json();
-            const force = body.force;
+            // const force = body.force;
+            const force = true;
             if (!force) {
                 const userfriends = await Friends.findOne({ id: user.id });
                 if (userfriends) {
@@ -35,7 +36,6 @@ export async function POST(request: NextRequest) {
             return NextResponse.json(newuserfriends.friends, { status: 200 });
         }
     } catch (error) {
-
         return NextResponse.json(
             {
                 error: error,
