@@ -95,6 +95,7 @@ export function CommitSplitDialog({ expenses }: { expenses: Expense[] }) {
                         </Label>
                         <Input
                             value={description}
+                            autoComplete="off"
                             onChange={(event) =>
                                 setDescription(event.target.value)
                             }
