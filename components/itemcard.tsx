@@ -19,16 +19,22 @@ import { PageContext, PageContextType } from "../contexts/PageContext";
 import { useContext, useState } from "react";
 import { Item, Person } from "../contexts/PageContext";
 import Image from "next/image";
+import { SquareX } from "lucide-react";
+
 export default function CardWithForm({
     id,
+    uuid,
     item,
     tax,
     persons,
+    removeItem,
 }: {
     id: number;
+    uuid: string;
     item: Item;
     tax: number;
     persons: Person[];
+    removeItem: (id:string) => void;
 }) {
     const {
         globalSelectedPersons,
@@ -88,8 +94,9 @@ export default function CardWithForm({
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [localSelectedPersons]);
     return (
-        <Card className="w-72">
+        <Card className="w-72 relative">
             {/* <img className="w-full h-48 object-cover" src={image} alt=""></img> */}
+            <SquareX className="cursor-pointer absolute right-0" onClick={(e:any) => removeItem(uuid)} color="white" />
             <Image
                 className="w-full h-48 object-cover"
                 height={192}
@@ -98,25 +105,25 @@ export default function CardWithForm({
                 alt=""
             ></Image>
             <Separator />
-
             <CardHeader className="pb-2 pt-0">
                 <h6 className="mt-4 text-sm font-semibold">{name}</h6>
             </CardHeader>
-
             <CardContent className="pb-0 pt-2">
                 <div className="flex justify-between items">
-                    <div className="flex items-center space-x-2 pr-6">
-                        <Switch
-                            checked={tax > 0 ? true : false}
-                            onCheckedChange={(checked) => {
-                                checked
-                                    ? setItemTax(id, globalTax)
-                                    : setItemTax(id, 0);
-                            }}
-                            id={`${name}_tax`}
-                        />
-                        <Label htmlFor="airplane-mode">Tax</Label>
-                    </div>
+                    {parseFloat(price) > 0 && (
+                        <div className="flex items-center space-x-2 pr-6">
+                            <Switch
+                                checked={tax > 0 ? true : false}
+                                onCheckedChange={(checked) => {
+                                    checked
+                                        ? setItemTax(id, globalTax)
+                                        : setItemTax(id, 0);
+                                }}
+                                id={`${name}_tax`}
+                            />
+                            <Label htmlFor="airplane-mode">Tax</Label>
+                        </div>
+                    )}
                     <div className="flex items-center space-x-2">
                         <Switch
                             checked={selectAll}
