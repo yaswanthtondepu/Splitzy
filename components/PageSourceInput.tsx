@@ -5,8 +5,10 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
 import { ItemsState, PageContext } from "../contexts/PageContext";
 import parseHtml from "@/lib/parseHtml";
+import { v4 as uuidv4 } from "uuid";
+import React from "react";
 
-export default function PageSourceInput() {
+export default function PageSourceInput({ handleAddCustomItems }:{handleAddCustomItems:()=>void}) {
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
     const [isError, setIsError] = useState(false);
     const { setItemsState } = useContext(PageContext);
@@ -22,6 +24,7 @@ export default function PageSourceInput() {
                     item,
                     tax: 0,
                     selectedPersons: [],
+                    id: uuidv4(),
                 };
             });
             setItemsState(allItemsState);
@@ -38,6 +41,9 @@ export default function PageSourceInput() {
                     Source code is not valid please Enter a Valid Source Code
                 </AlertDescription>
             </Alert>
+            <div className="flex justify-end">
+                <Button onClick={handleAddCustomItems}>Add custom items</Button>
+            </div>
             <div>
                 <h1 className=" text-[40px] font-semibold tracking-tight mt-2 ">
                     Welcome,
@@ -50,7 +56,6 @@ export default function PageSourceInput() {
                     in the below text box
                 </h4>
             </div>
-
             <div className="flex flex-col h-80">
                 <Textarea
                     className="h-96"
@@ -60,7 +65,10 @@ export default function PageSourceInput() {
                     ref={textareaRef}
                     placeholder="Paste the source here"
                 />
-                <Button className="mt-4 py-4 h-12" onClick={handleButton}>
+                <Button
+                    className="mt-4 py-4 h-12 cursor-pointer"
+                    onClick={handleButton}
+                >
                     Submit
                 </Button>
             </div>

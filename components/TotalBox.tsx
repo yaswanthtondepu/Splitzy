@@ -51,7 +51,7 @@ export default function TotalBox() {
                     {findItemsTotal(expenses)}
                 </div>
             </div>
-            <CommitSplitDialog expenses={expenses} />
+           {findItemsTotal(expenses) >0 && <CommitSplitDialog expenses={expenses} />}
         </div>
     );
 }

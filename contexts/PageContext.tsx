@@ -36,6 +36,7 @@ export type PageContextType = {
 };
 
 export interface ItemsState {
+    id: string;
     item: Item;
     tax: number;
     selectedPersons: Person[];
