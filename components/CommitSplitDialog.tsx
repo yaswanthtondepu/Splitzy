@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ReloadIcon } from "@radix-ui/react-icons";
-import { PageContext, PageContextType, Person } from "@/contexts/PageContext";
+import { ItemsState, PageContext, PageContextType, Person } from "@/contexts/PageContext";
 import {
     Select,
     SelectContent,
@@ -28,11 +28,10 @@ import { commitSplit } from "@/lib/backendrequests";
 import { Expense, Payment } from "@/interfaces/interfaces";
 import { useRouter } from "next/navigation";
 import { findItemsTotal } from "@/lib/utils";
-import { isNumber } from "tailwind-merge/dist/lib/validators";
 
 export function CommitSplitDialog({ expenses }: { expenses: Expense[] }) {
     const [description, setDescription] = useState<string>("");
-    const { globalSelectedPersons, setGlobalSelectedPersons } =
+    const { globalSelectedPersons, setGlobalSelectedPersons,itemsState } =
         useContext<PageContextType>(PageContext);
     const [individualPayments, setindividualPayments] = useState<Payment[]>([
         {},
@@ -46,6 +45,7 @@ export function CommitSplitDialog({ expenses }: { expenses: Expense[] }) {
             description,
             expenses,
             individualPayments,
+            itemsState,
             commitSplit
         );
         if (res) {
@@ -110,15 +110,7 @@ export function CommitSplitDialog({ expenses }: { expenses: Expense[] }) {
                 </h6>
                 <h6 className="text-sm font-semibold">Paid By:</h6>
 
-                {/* <div className="">
-                        <SelectBox persons={[...globalSelectedPersons]} />
-                    </div>
-                    <div className="w-40">
-                        <Input id="name" className="col-span-1" />
-                    </div>
-
-                    <Trash />
-                     */}
+            
                 <IndividualPaymentManager
                     expenses={expenses}
                     individualPayments={individualPayments}
@@ -144,6 +136,7 @@ const validate = async (
     description: string,
     expenses: Expense[],
     individualPayments: Payment[],
+    itemsState: ItemsState[],
     next: Function
 ) => {
     if (description.trim() === "") {
@@ -162,7 +155,7 @@ const validate = async (
         alert("Atleast one payer should be selected");
         return;
     }
-    return next(description, expenses, individualPayments);
+    return next(description, expenses, individualPayments,itemsState);
 };
 
 function SelectBox({

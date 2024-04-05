@@ -1,21 +1,21 @@
+import { ItemsState } from "@/contexts/PageContext";
 import { Expense, ItemState } from "@/interfaces/interfaces";
 import { Person, Payment } from "@/interfaces/interfaces";
-import axios from "axios";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
-import { redirect } from "next/navigation";
-import { useRouter } from "next/router";
+import { commentBuilder } from "./utils";
 
 export const parseTransaction = (
     description: string,
     expenses: Expense[],
-    individualPayments: Payment[]
+    individualPayments: Payment[],
+    itemsState: ItemsState[]
 ) => {
 
     const total = expenses.reduce((acc, expense) => acc + expense.amount, 0);
     const expense: any = {
         cost: total,
         description: description,
-        details: "comment",
+        details: commentBuilder(description,itemsState),
         date: new Date(),
         repeat_interval: "never",
         currency_code: "USD",
@@ -70,11 +70,12 @@ export const parseTransaction = (
 export const commitSplit = async (
     description: string,
     expenses: Expense[],
-    individualPayments: Payment[]
+    individualPayments: Payment[],
+    itemsState:ItemsState[]
 ) => {
     
-    const expense = parseTransaction(description, expenses, individualPayments);
-
+    const expense = parseTransaction(description, expenses, individualPayments,itemsState);
+    console.log(expense)
     const res = await fetch(`/api/v2/create_expense`, {
         method: "POST",
         headers: {
