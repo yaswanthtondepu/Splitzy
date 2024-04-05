@@ -23,19 +23,30 @@ export default function WelcomePageBody() {
         router.push("/");
     }
 
+    const[showCustomItems, setShowCustomItems] = useState(false);
+
+    function handleAddCustomItems(){
+        setShowCustomItems(true);
+    }
+
     return (
         <div className="flex flex-1">
             <div className="pl-10 flex-1  ">
                 {/* <SearchBar />    */}
-                {itemsState.length > 0 ? (
+                {itemsState.length > 0 || showCustomItems ? (
                     <div className="h-[calc(100vh-115px)] overflow-y-auto">
                         <GlobalTaxBox />
                         <SearchBar />
-                        <WalmartItems />
+                        <WalmartItems
+                            showCustomItems={showCustomItems}
+                            setShowCustomItems = {setShowCustomItems}
+                        />
                     </div>
                 ) : (
                     <div className="px-10 mt-20">
-                        <PageSourceInput />
+                        <PageSourceInput
+                            handleAddCustomItems={handleAddCustomItems}
+                        />
                     </div>
                 )}
             </div>
@@ -59,13 +70,15 @@ function GlobalTaxBox() {
                         type="number"
                         value={tax}
                         onChange={(e) => {
-                            if (Number(e.target.value) >=0 && Number(e.target.value) <= 100) {
-                                setTax(parseFloat(e.target.value));
-                            } else {
-                                setTax(0);
-                            }
-
-                            if(e.target.value.trim() === "") {
+                            setTax(parseFloat(e.target.value));
+                        }}
+                        onBlur={(e) => {
+                            if (
+                                e.target.value === "" ||
+                                parseFloat(e.target.value) < 0 ||
+                                parseFloat(e.target.value) > 100 ||
+                                isNaN(parseFloat(e.target.value))
+                            ) {
                                 setTax(0);
                             }
                         }}
@@ -77,7 +90,13 @@ function GlobalTaxBox() {
                         className="cursor-pointer h-8 w-8"
                         onClick={() => {
                             setInputFocused(false);
-                            if (tax === undefined || tax === null || tax < 0 || tax > 100 || isNaN(tax)) {
+                            if (
+                                tax === undefined ||
+                                tax === null ||
+                                tax < 0 ||
+                                tax > 100 ||
+                                isNaN(tax)
+                            ) {
                                 setGlobalTax(0);
                             } else {
                                 setGlobalTax(tax);
