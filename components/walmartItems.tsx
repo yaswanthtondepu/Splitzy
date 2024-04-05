@@ -1,8 +1,8 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { useState, useRef, useEffect, useContext } from "react";
+import {useContext } from "react";
 import { PageContext, PageContextType } from "../contexts/PageContext";
 import CardWithForm from "./itemcard";
+
 
 export default function WalmartItems() {
     const { itemsState } = useContext<PageContextType>(PageContext);
@@ -25,6 +25,7 @@ export default function WalmartItems() {
                                     persons={itemState.selectedPersons}
                                 />
                             ))}
+
 
                             {/* <CardWithForm />   */}
                         </div>
