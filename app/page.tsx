@@ -19,7 +19,7 @@ export default function Home() {
         
     }, []);
     return (
-        <div>
+        <div className="h-full flex flex-col justify-between">
             <div
                 className={`bg-white p-4  sticky z-10 top-0  left-0 right-0 text-center border-b align-center items-center flex justify-center `}
             >
@@ -64,7 +64,7 @@ export default function Home() {
                     )}
                 </div>
             </div>
-            <div className="flex flex-col text-[32px] font-extrabold items-center pt-20 sm:text-[40px] md:text-[56px] lg:text-[76px]  ">
+            <div className="flex flex-col text-[32px] font-extrabold items-center sm:text-[40px] md:text-[56px] lg:text-[76px]  ">
                 <span className="text-transparent animate-backgroundClip  bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500">
                     An
                 </span>
@@ -93,7 +93,7 @@ export default function Home() {
                 </Button>
             </div>
 
-            <div className="mt-5">
+            <div>
                 <Footer />
             </div>
         </div>
