@@ -34,7 +34,7 @@ export default function CardWithForm({
     item: Item;
     tax: number;
     persons: Person[];
-    removeItem: (id:string) => void;
+    removeItem: (id: string) => void;
 }) {
     const {
         globalSelectedPersons,
@@ -96,7 +96,9 @@ export default function CardWithForm({
     return (
         <Card className="w-72 relative">
             {/* <img className="w-full h-48 object-cover" src={image} alt=""></img> */}
-            <SquareX className="cursor-pointer absolute right-0" onClick={(e:any) => removeItem(uuid)} color="white" />
+            <div className="bg-black cursor-pointer absolute right-0 rounded-sm text-white hover:text-red-500 hover:bg-transparent transition-all">
+                <SquareX onClick={(e: any) => removeItem(uuid)}/>
+            </div>
             <Image
                 className="w-full h-48 object-cover"
                 height={192}

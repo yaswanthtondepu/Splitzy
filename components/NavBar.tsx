@@ -26,6 +26,12 @@ export default function NavBar() {
 
         getUser(router)
             .then((data: any) => {
+
+                if(data?.error?.name === "JsonWebTokenError"){
+                    handleLogout();
+                    return;
+                }
+                
                 const user = {
                     name:
                         (data.first_name ?? "") + " " + (data.last_name ?? ""),

@@ -22,6 +22,7 @@ export function NewItemDialog({
     const [itemName, setItemName] = useState<string>("");
     const [itemPrice, setItemPrice] = useState<number>(0.0);
     const [open, setOpen] = useState<boolean>(false);
+    let suggestions = ["Driver Tip", "Delivery Fee", "Walmart Cash"];
 
     const handleAddItem = () => {
         if (itemName.trim() === "") {
@@ -72,6 +73,18 @@ export function NewItemDialog({
                             required
                         />
                     </div>
+                    <div className="text-xs text-gray-500 pl-3">
+                        suggestions:{" "}
+                        {suggestions.map((suggestion) => (
+                            <span
+                                key={suggestion}
+                                onClick={() => setItemName(suggestion)}
+                                className="cursor-pointer border-2 rounded-lg p-1 m-1 border-gray-500 hover:border-green-700 hover:text-green-700 hover:font-bold transition-all"
+                            >
+                                {suggestion}
+                            </span>
+                        ))}
+                    </div>
 
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="name" className="text-right">
@@ -90,8 +103,8 @@ export function NewItemDialog({
                         />
                     </div>
                     {itemPrice < 0 && (
-                        <div className="text-xs text-red-500">
-                            Are you sure you want the price megative?
+                        <div className="text-xs text-red-500 pl-3">
+                            Are you sure you want the price negative?
                         </div>
                     )}
                 </div>
