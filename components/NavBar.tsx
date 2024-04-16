@@ -26,8 +26,9 @@ export default function NavBar() {
 
         getUser(router)
             .then((data: any) => {
-
-                if(data?.error?.name === "JsonWebTokenError"){
+               
+                if(data?.error){
+                    alert("Session expired, please login again");
                     handleLogout();
                     return;
                 }
