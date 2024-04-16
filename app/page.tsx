@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import Footer from "@/components/Footer";
 
 
 export default function Home() {
@@ -90,6 +91,10 @@ export default function Home() {
                     {" "}
                     Get Started
                 </Button>
+            </div>
+
+            <div className="mt-5">
+                <Footer />
             </div>
         </div>
     );
