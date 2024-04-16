@@ -47,7 +47,7 @@ export default function Page() {
                 </div>
                 <div className="py-3 px-5">
                     This Privacy Policy describes how our website treats the
-                    privacy of users ("you" or "your").{" "}
+                    privacy of users (&quot;you&quot; or &quot;your&quot;).{" "}
                     <div>
                         <div className="text-lg font-bold py-3">
                             What Information Do We Collect?
