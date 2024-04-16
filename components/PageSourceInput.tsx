@@ -59,6 +59,7 @@ export default function PageSourceInput({ handleAddCustomItems }:{handleAddCusto
             <div className="flex flex-col h-80">
                 <Textarea
                     className="h-96"
+                    id="html-input"
                     onChange={() => {
                         isError ? setIsError(false) : null;
                     }}
@@ -68,6 +69,7 @@ export default function PageSourceInput({ handleAddCustomItems }:{handleAddCusto
                 <Button
                     className="mt-4 py-4 h-12 cursor-pointer"
                     onClick={handleButton}
+                    id="submit-html-btn"
                 >
                     Submit
                 </Button>
