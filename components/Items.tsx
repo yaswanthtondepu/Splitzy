@@ -2,17 +2,11 @@
 import { Button } from "@/components/ui/button";
 import { useState, useRef, useEffect, useContext } from "react";
 import { PageContext, PageContextType } from "../contexts/PageContext";
-import CardWithForm from "./itemcard";
 import { NewItemDialog } from "./NewItemDialog";
 import { v4 as uuidv4 } from "uuid";
+import CardWithForm from "./ItemCard";
 
-export default function WalmartItems({
-    showCustomItems,
-    setShowCustomItems,
-}: {
-    showCustomItems: boolean;
-    setShowCustomItems: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+export default function Items() {
     const { itemsState, setItemsState } =
         useContext<PageContextType>(PageContext);
     function addNewItem(name: string, price: number) {
@@ -36,22 +30,15 @@ export default function WalmartItems({
     return (
         <>
             <div className="grid w-full gap-2">
-                {itemsState.length > 0 || showCustomItems ? (
+                {itemsState.length > 0 ? (
                     <div>
                         <div className="flex justify-between">
                             <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight mt-2 text-pink-500 ">
                                 Items Bought: {itemsState.length}
                             </h3>
-                            {itemsState.length === 0 &&
-                            <Button
-                                onClick={() => setShowCustomItems(false)}
-                                className="mt-4"
-                            >
-                                Back to source code page
-                            </Button>}
                         </div>
 
-                        <div className="mt-2 grid grid-cols-4 gap-12 justify-between sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                        <div className="my-2 grid grid-cols-4 gap-12 justify-between sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                             {itemsState.map((itemState, idx) => (
                                 <CardWithForm
                                     key={itemState.id}
@@ -68,9 +55,16 @@ export default function WalmartItems({
                         </div>
                     </div>
                 ) : (
-                    <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-                        No items found
-                    </h4>
+                    <>
+                        <h4 className="scroll-m-20 text-xl font-semibold tracking-tight py-5">
+                            No items found, please add them using the option
+                            below
+                        </h4>
+
+                        <div className="mb-3">
+                            <NewItemDialog addNewItem={addNewItem} />
+                        </div>
+                    </>
                 )}
             </div>
         </>
