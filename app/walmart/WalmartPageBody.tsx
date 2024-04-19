@@ -1,15 +1,14 @@
 "use client";
-import SearchBar from "../../components/SearchBar";
-import Items from "../../components/Items";
 import PageSourceInput from "../../components/PageSourceInput";
 import { Separator } from "@/components/ui/separator";
 import { PageContext, PageContextType } from "../../contexts/PageContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext} from "react";
 import TotalBox from "../../components/TotalBox";
 import { useRouter } from "next/navigation";
 import GlobalTaxBox from "@/components/GlobalTaxBox";
 import { Button } from "@/components/ui/button";
-import router from "next/router";
+import SearchBar from "@/components/SearchBar";
+import Items from "@/components/Items";
 
 export default function WalmartPageBody() {
     const { itemsState } = useContext<PageContextType>(PageContext);
