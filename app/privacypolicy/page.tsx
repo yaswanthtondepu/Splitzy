@@ -87,14 +87,14 @@ export default function Page() {
                         <div className="text-lg font-bold pt-3">Contact Us</div>
                         If you have any questions about this Privacy Policy,
                         please contact us by filling this{" "}
-                        <a
+                        <Link
                             target="_blank"
                             rel="noreferrer"
                             className="text-blue-500"
                             href="https://forms.gle/kSkyFu45R85QbzQ76"
                         >
                             form
-                        </a>
+                        </Link>
                         .
                     </div>
                 </div>
