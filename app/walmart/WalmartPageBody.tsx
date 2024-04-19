@@ -2,7 +2,7 @@
 import PageSourceInput from "../../components/PageSourceInput";
 import { Separator } from "@/components/ui/separator";
 import { PageContext, PageContextType } from "../../contexts/PageContext";
-import { useContext} from "react";
+import { useContext } from "react";
 import TotalBox from "../../components/TotalBox";
 import { useRouter } from "next/navigation";
 import GlobalTaxBox from "@/components/GlobalTaxBox";
