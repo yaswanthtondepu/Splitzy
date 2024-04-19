@@ -1,7 +1,5 @@
 "use client";
 import { Separator } from "@/components/ui/separator";
-import { PageContext, PageContextType } from "../../contexts/PageContext";
-import { useContext } from "react";
 import TotalBox from "../../components/TotalBox";
 import { useRouter } from "next/navigation";
 import GlobalTaxBox from "@/components/GlobalTaxBox";
@@ -10,17 +8,7 @@ import SearchBar from "@/components/SearchBar";
 import Items from "@/components/Items";
 
 export default function CustomItemsPageBody() {
-    const { itemsState } = useContext<PageContextType>(PageContext);
-    let access_token =
-        typeof window !== "undefined"
-            ? window.localStorage.getItem("access_token") || ""
-            : "";
     const router = useRouter();
-    if (!access_token) {
-        window.alert("Please login to continue");
-
-        router.push("/");
-    }
     return (
         <div className="flex flex-1">
             <div className="pl-10 flex-1  ">
