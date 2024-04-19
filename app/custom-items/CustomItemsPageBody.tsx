@@ -1,5 +1,5 @@
 "use client";
-import SearchBar from "../../components/searchbar";
+import SearchBar from "../../components/SearchBar";
 import Items from "../../components/Items";
 import PageSourceInput from "../../components/PageSourceInput";
 import { Separator } from "@/components/ui/separator";
@@ -26,9 +26,13 @@ export default function CustomItemsPageBody() {
         <div className="flex flex-1">
             <div className="pl-10 flex-1  ">
                 <div>
-                    <Button onClick={()=>{
-                        router.push("/welcome");
-                    }}>Back to Welcome page</Button>
+                    <Button
+                        onClick={() => {
+                            router.push("/welcome");
+                        }}
+                    >
+                        Back to Welcome page
+                    </Button>
                     <GlobalTaxBox />
                     <SearchBar />
                     <Items />
