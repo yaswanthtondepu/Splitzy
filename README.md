@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img  style="display: block; margin: 0 auto;" src="https://github.com/yaswanthtondepu/Splitzy/blob/main/public/splitzy.jpg"></img>
+  <img  style="display: block; margin: 0 auto; height:200px; width:200px" src="https://github.com/yaswanthtondepu/Splitzy/blob/main/public/splitzy.jpg"></img>
   
 </div>
 
