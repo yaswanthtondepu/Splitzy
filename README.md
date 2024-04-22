@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img  style="display: block; margin: 0 auto;" src="https://github.com/yash1744/walmsplit-next/assets/63769766/ea315d19-65f1-481d-845b-699c7c46af75"></img>
+  <img  style="display: block; margin: 0 auto;" src="https://github.com/yaswanthtondepu/Splitzy/blob/main/public/splitzy.jpg"></img>
   
 </div>
 
