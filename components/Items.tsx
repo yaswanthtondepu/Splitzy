@@ -14,7 +14,7 @@ export default function Items() {
             item: {
                 name: name,
                 price: price.toString(),
-                image: "/walmartsplit-noproduct.jpg",
+                image: "/splitzy.jpg",
             },
             tax: 0,
             selectedPersons: [],
