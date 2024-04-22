@@ -27,6 +27,16 @@ export default function Items() {
         const newItems = itemsState.filter((item) => item.id !== id);
         setItemsState(newItems);
     }
+    function editItem(id: string, name: string, price: number) {
+        const newItems = itemsState.map((item) => {
+            if (item.id === id) {
+                item.item.name = name;
+                item.item.price = price.toString();
+            }
+            return item;
+        });
+        setItemsState(newItems);
+    }
     return (
         <>
             <div className="grid w-full gap-2">
@@ -48,6 +58,7 @@ export default function Items() {
                                     tax={itemState.tax}
                                     persons={itemState.selectedPersons}
                                     removeItem={removeItem}
+                                    editItem={editItem}
                                 />
                             ))}
 
