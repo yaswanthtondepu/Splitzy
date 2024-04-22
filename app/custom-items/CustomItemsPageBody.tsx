@@ -12,7 +12,7 @@ export default function CustomItemsPageBody() {
     return (
         <div className="flex flex-1">
             <div className="pl-10 flex-1  ">
-                <div>
+                <div className="h-[calc(100vh-115px)] overflow-y-auto">
                     <Button
                         onClick={() => {
                             router.push("/welcome");
