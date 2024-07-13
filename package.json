@@ -49,6 +49,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@types/jest": "^29.5.12",
     "@types/uuid": "^9.0.8",
     "babel-jest": "^29.7.0",

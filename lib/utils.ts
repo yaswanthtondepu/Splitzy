@@ -12,21 +12,40 @@ export function findItemsTotal (expenses:any) {
 export function commentBuilder(description :string, itemsState:ItemsState[]){
     let groupedItems = groupItemsByPersons(itemsState);
     let comment:string = ""
-    comment += " ---------- Splitzy -------------\n"
-    comment += ` -------  ${description}  -----------\n`
+    comment += " Added using Splitzy \n"
+    comment += " https://splitzyy.vercel.app/ \n\n"
+    comment += " *****************************************\n"
+
+
+
+    comment += ` ${description}  \n`
     
     Object.keys(groupedItems).forEach(key=>{
-        if(key.split(',').length ===1){
-            comment += `Split for ${key}\n`
+
+        if(key !== ""){
+            comment += " *****************************************\n\n"
+            if(key.split(',').length ===1){
+                comment += ` Split for ${key}`
+            }
+            else{
+                comment += ` Split involving\n          ${key}`
+            }
+            // comment += "\n\n*****************************************\n"
+            comment += "\n\n"
+
+            
+            groupedItems[key].forEach(itemState=>{
+                comment += " *   "+FormatItemName(itemState.item.name) +"        "
+                comment += "\n                                                      \$ "+ itemState.item.price+"\n\n"
+            })
+            comment +="\n"
+            
+
         }
-        else{
-            comment += `Split involving ${key}\n`
-        }
-        groupedItems[key].forEach(itemState=>{
-            comment += "   "+itemState.item.name +"         "+ itemState.item.price+"\n"
-        })
+        
     })
     return comment
+
 
 
 }
@@ -69,3 +88,19 @@ export function groupItemsByPersons(itemsState: ItemsState[]): GroupedItemsByPer
 
     return sortedGroupedItems;
 }
+
+function FormatItemName(name:string){
+    const appendingstring ="\n     "
+    const maxlength = 30
+    let result =""
+    for (let i = 0; i < name.length; i++) {
+        if(i%maxlength ===0 && i!==0){
+            result += appendingstring+name[i]
+        }
+        else{
+            result += name[i]
+        }
+    }
+    return result
+}
+
