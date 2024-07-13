@@ -54,6 +54,10 @@ export interface Person {
     image?: string;
 }
 
+export interface GroupedItemsByPersons {
+    [key: string]: ItemsState[];
+}
+
 // Create a Context Provider component
 export const PageProvider = ({ children }: { children: React.ReactNode }) => {
     const [globalSelectedPersons, setGlobalSelectedPersons] = useState<
