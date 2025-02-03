@@ -21,7 +21,7 @@ import { useState } from "react";
 
 export default function Page() {
     const searchParams = useSearchParams();
-    
+
     const router = useRouter();
     const stores = [
         {
@@ -41,7 +41,7 @@ export default function Page() {
             ? window.localStorage.getItem("access_token") || ""
             : "";
     if (!access_token) {
-        window.alert("Please login to continue");
+        alert("Please login to continue");
 
         router.push("/");
     }
@@ -53,8 +53,8 @@ export default function Page() {
         if (value === "custom") {
             router.push("/custom-items");
         }
-        if(value === "") {
-            window.alert("Please select a store to continue");
+        if (value === "") {
+            alert("Please select a store to continue");
             return;
         }
     }
@@ -66,11 +66,24 @@ export default function Page() {
                     <NavBar />
 
                     <div className="px-5">
-                        <div className="mt-2 text-4xl">Welcome,</div>
+                        <div className="flex justify-between items-center">
+                            <div>
+                                <div className="mt-2 text-4xl">Welcome,</div>
 
-                        <div className="pt-2 text-xl">
-                            Please choose one of the options below to get
-                            started
+                                <div className="pt-2 text-xl">
+                                    Please choose one of the options below to
+                                    get started
+                                </div>
+                            </div>
+
+                            <div>
+                                <Button
+                                    onClick={() => router.push("/expenses")}
+                                    className="px-5"
+                                >
+                                    Expenses
+                                </Button>
+                            </div>
                         </div>
 
                         <div className="pt-10 text-center">

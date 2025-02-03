@@ -18,13 +18,13 @@ export default function WalmartPageBody() {
             <div className="pl-10 flex-1  ">
                 {/* <SearchBar />    */}
                 {itemsState.length > 0 ? (
-                    <div className="h-[calc(100vh-115px)] overflow-y-auto">
+                    <div className="h-[calc(100vh-115px)] overflow-y-auto pt-5">
                         <Button
                             onClick={() => {
                                 router.push("/welcome");
                             }}
                         >
-                            Back to Welcome page
+                            Back to Home
                         </Button>
 
                         <GlobalTaxBox />
@@ -33,13 +33,15 @@ export default function WalmartPageBody() {
                     </div>
                 ) : (
                     <>
-                        <Button
-                            onClick={() => {
-                                router.push("/welcome");
-                            }}
-                        >
-                            Back to Welcome page
-                        </Button>
+                        <div className="pt-5">
+                            <Button
+                                onClick={() => {
+                                    router.push("/welcome");
+                                }}
+                            >
+                                Back to Home
+                            </Button>
+                        </div>
                         <div className="px-10 mt-10">
                             <PageSourceInput />
                         </div>

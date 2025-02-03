@@ -12,13 +12,13 @@ export default function CustomItemsPageBody() {
     return (
         <div className="flex flex-1">
             <div className="pl-10 flex-1  ">
-                <div className="h-[calc(100vh-115px)] overflow-y-auto">
+                <div className="h-[calc(100vh-115px)] overflow-y-auto pt-5">
                     <Button
                         onClick={() => {
                             router.push("/welcome");
                         }}
                     >
-                        Back to Welcome page
+                        Back to Home
                     </Button>
                     <GlobalTaxBox />
                     <SearchBar />

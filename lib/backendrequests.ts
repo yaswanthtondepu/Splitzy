@@ -3,6 +3,7 @@ import { Expense, ItemState } from "@/interfaces/interfaces";
 import { Person, Payment } from "@/interfaces/interfaces";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
 import { commentBuilder } from "./utils";
+import exp from "constants";
 
 export const parseTransaction = (
     description: string,
@@ -10,12 +11,11 @@ export const parseTransaction = (
     individualPayments: Payment[],
     itemsState: ItemsState[]
 ) => {
-
     const total = expenses.reduce((acc, expense) => acc + expense.amount, 0);
     const expense: any = {
         cost: total,
         description: description,
-        details: commentBuilder(description,itemsState),
+        details: commentBuilder(description, itemsState),
         date: new Date(),
         repeat_interval: "never",
         currency_code: "USD",
@@ -63,7 +63,6 @@ export const parseTransaction = (
         expense[`users__${idx}__owed_share`] = transaction.owed_share;
     });
 
-
     return expense;
 };
 
@@ -71,11 +70,15 @@ export const commitSplit = async (
     description: string,
     expenses: Expense[],
     individualPayments: Payment[],
-    itemsState:ItemsState[]
+    itemsState: ItemsState[]
 ) => {
-    
-    const expense = parseTransaction(description, expenses, individualPayments,itemsState);
-    console.log(expense)
+    const expense = parseTransaction(
+        description,
+        expenses,
+        individualPayments,
+        itemsState
+    );
+    console.log(expense);
     const res = await fetch(`/api/v2/create_expense`, {
         method: "POST",
         headers: {
@@ -135,6 +138,26 @@ export const getUser = async (router: AppRouterInstance) => {
             token: access_token,
         },
         body: JSON.stringify({}),
+    });
+    return res.json();
+};
+
+export const getExpenses = async (
+    router: AppRouterInstance,
+    limit: number,
+    offset: number
+) => {
+    let access_token = get_access_token();
+    if (!access_token) {
+        alert("Login expired. Please login again");
+        router.push("/");
+    }
+    const res = await fetch(`/api/v2/get_expenses`, {
+        method: "POST",
+        headers: {
+            token: access_token,
+        },
+        body: JSON.stringify({ limit, offset }),
     });
     return res.json();
 };
