@@ -26,7 +26,6 @@ export default function Login() {
                 },
             })
                 .then((res) => {
-
                     localStorage.setItem("access_token", res.data.token);
                     router.replace("/welcome");
                 })
@@ -34,8 +33,19 @@ export default function Login() {
                     console.log(err);
                 });
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [authorizationCode, router]);
+
+    //If user is on this page for more than 10 seconds, redirect to home page. Also show an alert message
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            alert(
+                "Something went wrong. You are being redirected to the home page. Please try again."
+            );
+            router.replace("/");
+        }, 10000);
+        return () => clearTimeout(timeout);
+    }, [router]);
 
     return (
         <>

@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import User from "@/lib/api/models/user";
+import { log } from "console";
 
 export const generateJwtToken = (user: Person) => {
     const payload = {
@@ -114,7 +115,6 @@ export const fetchFriendsSplitWise = async (accessToken: string) => {
     return ans;
 };
 
-
 export async function verifyToken(request: NextRequest) {
     const expiryTime = 60 * 60 * 24 * 3;
 
@@ -129,7 +129,6 @@ export async function verifyToken(request: NextRequest) {
     const decoded = decryptData(decryptedToken.payloadData);
 
     const user = await User.findOne({ userId: JSON.parse(decoded).id });
-
 
     if (decryptedToken.iat < Math.floor(user?.updatedAt.getTime() / 1000)) {
         return { error: "Token expired" };
