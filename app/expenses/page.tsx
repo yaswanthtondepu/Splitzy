@@ -10,35 +10,35 @@ import { Button } from "@/components/ui/button";
 
 export default function Page() {
     const router = useRouter();
-    const access_token =
-        typeof window !== "undefined"
-            ? window.localStorage.getItem("access_token") || ""
-            : "";
-    if (access_token === "") {
-        router.push("/login");
-    }
 
-    const user =
-        typeof window !== "undefined"
-            ? window.localStorage.getItem("user")
-            : "";
-    let userId: string | number | undefined;
-    if (user) {
-        userId = JSON.parse(user).id;
-    }
+    const [accessToken, setAccessToken] = useState("");
+    const [userId, setUserId] = useState<string | number | undefined>(
+        undefined
+    );
 
-    // State for paginated expenses (default view) and full expenses (for search)
-    const [expenses, setExpenses] = useState([]); // current page
-    const [allExpenses, setAllExpenses] = useState([]); // full dataset for search
-    const [loading, setLoading] = useState(false); // loading for paginated fetch
-    const [allLoading, setAllLoading] = useState(false); // loading for full fetch
+    useEffect(() => {
+        const token = window.localStorage.getItem("access_token") || "";
+        setAccessToken(token);
+        if (token === "") {
+            router.push("/login");
+        }
+        const user = window.localStorage.getItem("user");
+        if (user) {
+            setUserId(JSON.parse(user).id);
+        }
+    }, [router]);
+
+    const [expenses, setExpenses] = useState([]);
+    const [allExpenses, setAllExpenses] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [allLoading, setAllLoading] = useState(false);
     const [limit, setLimit] = useState(100);
     const [offset, setOffset] = useState(0);
     const [searchQuery, setSearchQuery] = useState("");
 
     // Fetch expenses for the current page when no search is active
     useEffect(() => {
-        if (!searchQuery) {
+        if (!searchQuery && accessToken) {
             setLoading(true);
             const fetchExpenses = async () => {
                 try {
@@ -52,11 +52,11 @@ export default function Page() {
             };
             fetchExpenses();
         }
-    }, [limit, offset, router, searchQuery]);
+    }, [limit, offset, router, searchQuery, accessToken]);
 
     // When a search query is active, fetch all expenses to search across everything
     useEffect(() => {
-        if (searchQuery) {
+        if (searchQuery && accessToken) {
             setAllLoading(true);
             const fetchAllExpenses = async () => {
                 let offsetLocal = 0;
@@ -85,7 +85,7 @@ export default function Page() {
             };
             fetchAllExpenses();
         }
-    }, [searchQuery, router, limit]);
+    }, [searchQuery, router, limit, accessToken]);
 
     // Debounce the search input to reduce rapid state updates
     const handleSearch = debounce((query) => setSearchQuery(query), 300);
@@ -164,7 +164,7 @@ export default function Page() {
                                         <button
                                             type="button"
                                             onClick={handleNextPage}
-                                            className="px-4 py-2 bg-black text-white rounded "
+                                            className="px-4 py-2 bg-black text-white rounded"
                                         >
                                             Next
                                         </button>
