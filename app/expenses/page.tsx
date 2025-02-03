@@ -18,6 +18,15 @@ export default function Page() {
         router.push("/login");
     }
 
+    const user =
+        typeof window !== "undefined"
+            ? window.localStorage.getItem("user")
+            : "";
+    let userId: string | number | undefined;
+    if (user) {
+        userId = JSON.parse(user).id;
+    }
+
     // State for paginated expenses (default view) and full expenses (for search)
     const [expenses, setExpenses] = useState([]); // current page
     const [allExpenses, setAllExpenses] = useState([]); // full dataset for search
@@ -81,14 +90,18 @@ export default function Page() {
     // Debounce the search input to reduce rapid state updates
     const handleSearch = debounce((query) => setSearchQuery(query), 300);
 
-    // If there's a search query, filter the full dataset; otherwise, use the paginated data
-    const filteredExpenses = searchQuery
-        ? allExpenses.filter((expense: any) =>
-              expense.description
-                  .toLowerCase()
-                  .includes(searchQuery.toLowerCase())
-          )
-        : expenses;
+    // Filter the data based on search query first, then filter out expenses that do not include the current user.
+    const filteredExpenses = (
+        searchQuery
+            ? allExpenses.filter((expense: any) =>
+                  expense.description
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase())
+              )
+            : expenses
+    ).filter((expense: any) =>
+        expense.users?.some((userItem: any) => userItem.user_id === userId)
+    );
 
     const handleNextPage = () => {
         if (!searchQuery) {
@@ -200,7 +213,12 @@ export default function Page() {
                                                     (expense: any) => (
                                                         <tr
                                                             key={expense.id}
-                                                            className="hover:bg-gray-50"
+                                                            className={`${
+                                                                expense.deleted_at !==
+                                                                null
+                                                                    ? "bg-red-100"
+                                                                    : "hover:bg-gray-50"
+                                                            }`}
                                                         >
                                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                                                 {
