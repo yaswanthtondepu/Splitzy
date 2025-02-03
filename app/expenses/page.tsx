@@ -1,7 +1,7 @@
 "use client";
 import NavBar from "@/components/NavBar";
 import { PageProvider } from "@/contexts/PageContext";
-import { getExpenses } from "@/lib/backendrequests";
+import { getExpenses, getUser } from "@/lib/backendrequests";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { InfinitySpin } from "react-loader-spinner";
@@ -22,9 +22,16 @@ export default function Page() {
         if (token === "") {
             router.push("/login");
         }
-        const user = window.localStorage.getItem("user");
-        if (user) {
-            setUserId(JSON.parse(user).id);
+        try {
+            getUser(router)
+                .then((data: any) => {
+                    setUserId(data.id);
+                })
+                .catch((err: any) => {
+                    console.log(err);
+                });
+        } catch (err) {
+            console.log(err);
         }
     }, [router]);
 
