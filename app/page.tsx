@@ -4,11 +4,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Footer from "@/components/Footer";
-import NavBar from "@/components/NavBar";
-
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const router = useRouter();
     useEffect(() => {
         let access_token =
             typeof window !== "undefined"
@@ -17,7 +17,6 @@ export default function Home() {
         if (access_token.length > 0) {
             setIsAuthenticated(true);
         }
-        
     }, []);
     return (
         <div className="h-full flex flex-col justify-between">
@@ -83,9 +82,11 @@ export default function Home() {
                     className="mt-4"
                     onClick={() => {
                         if (!isAuthenticated) {
-                            window.location.href = `https://secure.splitwise.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_SPLITWISE_API_TOKEN}`;
+                            router.push(
+                                `https://secure.splitwise.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_SPLITWISE_API_TOKEN}`
+                            );
                         } else {
-                            window.location.href = "/welcome";
+                            router.push("/welcome");
                         }
                     }}
                 >
