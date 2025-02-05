@@ -1,12 +1,14 @@
 "use client";
 import NavBar from "@/components/NavBar";
 import { PageProvider } from "@/contexts/PageContext";
-import { getExpenses, getUser } from "@/lib/backendrequests";
+import { getExpenses, getUser, getUserRole } from "@/lib/backendrequests";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { InfinitySpin } from "react-loader-spinner";
 import { debounce } from "lodash";
 import { Button } from "@/components/ui/button";
+import { SECOND_LEVEL_ACCESS_USER_ROLES, USER_ROLE } from "@/lib/utils";
+import { Info } from "lucide-react";
 
 export default function Page() {
     const router = useRouter();
@@ -15,35 +17,48 @@ export default function Page() {
     const [userId, setUserId] = useState<string | number | undefined>(
         undefined
     );
+    const [userLoading, setUserLoading] = useState(true);
+    const [userRole, setUserRole] = useState<USER_ROLE>("user");
+    const priorityUserRoles = SECOND_LEVEL_ACCESS_USER_ROLES;
+    const [showTooltip, setShowTooltip] = useState(false);
 
     useEffect(() => {
         const token = window.localStorage.getItem("access_token") || "";
         setAccessToken(token);
         if (token === "") {
             router.push("/login");
+            return;
         }
-        try {
-            getUser(router)
-                .then((data: any) => {
-                    setUserId(data.id);
-                })
-                .catch((err: any) => {
-                    console.log(err);
-                });
-        } catch (err) {
-            console.log(err);
-        }
+        getUser(router)
+            .then((data: any) => {
+                setUserId(data.id);
+                setUserLoading(false);
+            })
+            .catch((err: any) => {
+                console.error("Error fetching user", err);
+                setUserLoading(false);
+            });
+
+        // get user role
+        getUserRole(router)
+            .then((data: any) => {
+                setUserRole(data.role);
+            })
+            .catch((err: any) => {
+                console.error("Error fetching user role", err);
+            });
     }, [router]);
 
+    useLayoutEffect(() => {}, [userRole]);
+
     const [expenses, setExpenses] = useState([]);
-    const [allExpenses, setAllExpenses] = useState([]);
+    const [allExpenses, setAllExpenses] = useState<any[]>([]); // cached full dataset
     const [loading, setLoading] = useState(false);
     const [allLoading, setAllLoading] = useState(false);
     const [limit, setLimit] = useState(100);
     const [offset, setOffset] = useState(0);
     const [searchQuery, setSearchQuery] = useState("");
 
-    // Fetch expenses for the current page when no search is active
     useEffect(() => {
         if (!searchQuery && accessToken) {
             setLoading(true);
@@ -61,13 +76,12 @@ export default function Page() {
         }
     }, [limit, offset, router, searchQuery, accessToken]);
 
-    // When a search query is active, fetch all expenses to search across everything
     useEffect(() => {
-        if (searchQuery && accessToken) {
+        if (searchQuery && accessToken && allExpenses.length === 0) {
             setAllLoading(true);
             const fetchAllExpenses = async () => {
                 let offsetLocal = 0;
-                let fetchedExpenses: any = [];
+                let fetchedExpenses: any[] = [];
                 let shouldContinue = true;
                 while (shouldContinue) {
                     try {
@@ -92,12 +106,10 @@ export default function Page() {
             };
             fetchAllExpenses();
         }
-    }, [searchQuery, router, limit, accessToken]);
+    }, [searchQuery, router, limit, accessToken, allExpenses.length]);
 
-    // Debounce the search input to reduce rapid state updates
     const handleSearch = debounce((query) => setSearchQuery(query), 300);
 
-    // Filter the data based on search query first, then filter out expenses that do not include the current user.
     const filteredExpenses = (
         searchQuery
             ? allExpenses.filter((expense: any) =>
@@ -123,38 +135,111 @@ export default function Page() {
     };
 
     return (
-        <>
-            <PageProvider>
-                <NavBar />
-                <div className="min-h-screen bg-gray-100">
-                    <div className="max-w-6xl mx-auto py-8">
-                        <div className="flex">
-                            <div>
-                                <Button
-                                    onClick={() => {
-                                        router.push("/welcome");
-                                    }}
-                                >
-                                    Back to Home
-                                </Button>
-                            </div>
-                            <div className="flex-1">
-                                <h1 className="text-3xl font-semibold text-center mb-6">
-                                    Expenses Dashboard
-                                </h1>
-                            </div>
+        <PageProvider>
+            <NavBar />
+            <div className="min-h-screen bg-gray-100">
+                <div className="max-w-6xl mx-auto py-8">
+                    <div className="flex">
+                        <div>
+                            <Button onClick={() => router.push("/welcome")}>
+                                Back to Home
+                            </Button>
                         </div>
+                        <div className="flex-1">
+                            <h1 className="text-3xl font-semibold text-center mb-6">
+                                Expenses Dashboard
+                            </h1>
+                        </div>
+                    </div>
 
+                    {userLoading ? (
+                        <div className="flex justify-center items-center py-10">
+                            <InfinitySpin width="100" color="#000" />
+                        </div>
+                    ) : (
                         <div className="bg-white shadow rounded-lg p-6">
                             <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
-                                <input
+                                {/* <input
                                     type="text"
                                     placeholder="Search expenses..."
-                                    onChange={(e) =>
-                                        handleSearch(e.target.value)
+                                    disabled={
+                                        !priorityUserRoles.includes(userRole)
                                     }
-                                    className="w-full sm:w-1/3 border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-black transition-all mb-4 sm:mb-0"
-                                />
+                                    onChange={(e) => {
+                                        if (
+                                            !priorityUserRoles.includes(
+                                                userRole
+                                            )
+                                        )
+                                            return;
+                                        handleSearch(e.target.value);
+                                    }}
+                                    className="w-full sm:w-1/3 border border-gray-300 rounded-lg py-2 px-4 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-black transition-all mb-4 sm:mb-0"
+                                /> 
+                                */}
+                                <div className="flex items-center relative">
+                                    <input
+                                        type="text"
+                                        placeholder="Search expenses..."
+                                        disabled={
+                                            !priorityUserRoles.includes(
+                                                userRole
+                                            )
+                                        }
+                                        onChange={(e) => {
+                                            if (
+                                                !priorityUserRoles.includes(
+                                                    userRole
+                                                )
+                                            )
+                                                return;
+                                            handleSearch(e.target.value);
+                                        }}
+                                        className="w-full flex-1 sm:w-1/3 border border-gray-300 rounded-lg py-2 px-4 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-black transition-all mb-4 sm:mb-0"
+                                    />
+
+                                    {!priorityUserRoles.includes(userRole) && (
+                                        <div
+                                            className="ml-2 relative"
+                                            onMouseEnter={() =>
+                                                setShowTooltip(true)
+                                            }
+                                            onMouseLeave={() =>
+                                                setShowTooltip(false)
+                                            }
+                                        >
+                                            <Info
+                                                size={18}
+                                                className="text-gray-500 cursor-pointer"
+                                            />
+
+                                            {showTooltip && (
+                                                <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-72 bg-gray-900 text-white text-sm p-3 rounded-lg shadow-lg z-10">
+                                                    <div className="underline flex justify-center">
+                                                        Why is search disabled?
+                                                    </div>
+                                                    <div>
+                                                        Splitwise does not
+                                                        provide a search API, so
+                                                        each search requires
+                                                        multiple API calls to
+                                                        fetch your expense
+                                                        history. Since we use a
+                                                        free API with limited
+                                                        requests, high user
+                                                        activity can quickly
+                                                        exhaust the quota. As a
+                                                        result, search is
+                                                        currently disabled for
+                                                        your user role.
+                                                    </div>
+                                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -mt-1 w-3 h-3 rotate-45 bg-gray-900"></div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+
                                 {!searchQuery && (
                                     <div className="flex items-center gap-4">
                                         <button
@@ -304,9 +389,9 @@ export default function Page() {
                                     </div>
                                 )}
                         </div>
-                    </div>
+                    )}
                 </div>
-            </PageProvider>
-        </>
+            </div>
+        </PageProvider>
     );
 }
