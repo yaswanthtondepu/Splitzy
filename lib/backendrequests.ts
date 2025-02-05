@@ -142,6 +142,68 @@ export const getUser = async (router: AppRouterInstance) => {
     return res.json();
 };
 
+//get user role
+export const getUserRole = async (router: AppRouterInstance) => {
+    let access_token = get_access_token();
+    if (!access_token) {
+        alert("Login expired. Please login again");
+        router.push("/");
+    }
+    const res = await fetch(`/api/v2/get_user_role`, {
+        method: "POST",
+        headers: {
+            token: access_token,
+            contentType: "application/json",
+        },
+        body: JSON.stringify({}),
+    });
+    return res.json();
+};
+
+// Get all users
+export const getAllUsers = async (router: AppRouterInstance) => {
+    let access_token = get_access_token();
+    if (!access_token) {
+        alert("Login expired. Please login again");
+        router.push("/");
+        return;
+    }
+    const res = await fetch(`/api/v2/get_all_users`, {
+        method: "GET",
+        headers: {
+            token: access_token,
+            contentType: "application/json",
+        },
+    });
+
+    return res.json();
+};
+
+// Update user role
+export const updateUserRole = async (
+    router: AppRouterInstance,
+    _id: string,
+    userId: string,
+    newRole: string
+) => {
+    let access_token = get_access_token();
+    if (!access_token) {
+        alert("Login expired. Please login again");
+        router.push("/");
+        return;
+    }
+    const res = await fetch(`/api/v2/update_user_role`, {
+        method: "PUT",
+        headers: {
+            token: access_token,
+            contentType: "application/json",
+        },
+        body: JSON.stringify({ _id, role: newRole }),
+    });
+
+    return res.json();
+};
+
 export const getExpenses = async (
     router: AppRouterInstance,
     limit: number,

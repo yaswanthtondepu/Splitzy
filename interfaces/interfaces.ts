@@ -38,6 +38,7 @@ export type Payment =
 export interface IUser {
     userId: string;
     accessToken: string;
+    role: string;
 }
 
 export interface IGroup {

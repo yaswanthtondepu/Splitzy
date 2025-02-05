@@ -26,13 +26,12 @@ export default function NavBar() {
 
         getUser(router)
             .then((data: any) => {
-               
-                if(data?.error){
+                if (data?.error) {
                     alert("Session expired, please login again");
                     handleLogout();
                     return;
                 }
-                
+
                 const user = {
                     name:
                         (data.first_name ?? "") + " " + (data.last_name ?? ""),
@@ -91,6 +90,9 @@ export default function NavBar() {
                         <h6 className="ml-2">Hello, {user?.name}</h6>
                         {showMenu && (
                             <div className="absolute right-1 top-10 cursor-default">
+                                <div className="bg-[#1e2121] border border-solid  py-2 text-white w-44 rounded-md shadow-md">
+                                    Splitwise user id: {user?.id}
+                                </div>
                                 <UserOptionsMenu
                                     setShowMenu={setShowMenu}
                                     handleLogout={handleLogout}

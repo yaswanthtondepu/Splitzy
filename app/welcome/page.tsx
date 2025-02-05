@@ -4,7 +4,7 @@ import NavBar from "../../components/NavBar";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, TOP_ACCESS_USER_ROLES, USER_ROLE } from "@/lib/utils";
 import {
     Command,
     CommandEmpty,
@@ -17,7 +17,8 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
+import { getUserRole } from "@/lib/backendrequests";
 
 export default function Page() {
     const searchParams = useSearchParams();
@@ -35,6 +36,7 @@ export default function Page() {
     ];
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState("");
+    const [userRole, setUserRole] = useState<USER_ROLE>("user");
 
     let access_token =
         typeof window !== "undefined"
@@ -58,6 +60,16 @@ export default function Page() {
             return;
         }
     }
+
+    useLayoutEffect(() => {
+        getUserRole(router)
+            .then((data: any) => {
+                setUserRole(data.role);
+            })
+            .catch((err: any) => {
+                console.error("Error fetching user role", err);
+            });
+    }, [router]);
 
     return (
         <>
@@ -150,9 +162,20 @@ export default function Page() {
                         </div>
                     </div>
                 </PageProvider>
+                {TOP_ACCESS_USER_ROLES.includes(userRole) && (
+                    <div className="mt-20 mx-5">
+                        <div>
+                            <Button
+                                onClick={() =>
+                                    router.push("/admin/manage-user-roles")
+                                }
+                            >
+                                Manage User Roles
+                            </Button>
+                        </div>
+                    </div>
+                )}
             </div>
-
-            {/* Body */}
         </>
     );
 }
