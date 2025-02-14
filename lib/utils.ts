@@ -6,6 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export type USER_ROLE = "user" | "moderator" | "admin" | "superadmin";
+export const WEALTH_LEDGER_URL = "https://wealthledger.vercel.app/";
 
 export const TOP_SECRET_USER_ROLES: USER_ROLE[] = ["superadmin"];
 export const TOP_ACCESS_USER_ROLES: USER_ROLE[] = ["superadmin", "admin"];

@@ -26,7 +26,6 @@ export default function TotalBox() {
         >
             <div className="font-bold mb-4 ">Overall Expenses</div>
             {expenses.map((expense) => {
-
                 return (
                     <div key={expense.person.id} className="flex">
                         {" "}
@@ -47,11 +46,11 @@ export default function TotalBox() {
                 <div key="total" className="font-bold  flex-1">
                     Total
                 </div>{" "}
-                <div className="font-bold">
-                    {findItemsTotal(expenses)}
-                </div>
+                <div className="font-bold">{findItemsTotal(expenses)}</div>
             </div>
-           {findItemsTotal(expenses) >0 && <CommitSplitDialog expenses={expenses} />}
+            {findItemsTotal(expenses) > 0 && (
+                <CommitSplitDialog expenses={expenses} user={user} />
+            )}
         </div>
     );
 }
