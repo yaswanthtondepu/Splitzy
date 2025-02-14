@@ -12,7 +12,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ReloadIcon } from "@radix-ui/react-icons";
-import { ItemsState, PageContext, PageContextType, Person } from "@/contexts/PageContext";
+import {
+    ItemsState,
+    PageContext,
+    PageContextType,
+    Person,
+} from "@/contexts/PageContext";
 import {
     Select,
     SelectContent,
@@ -27,19 +32,28 @@ import { useContext, useEffect, useState } from "react";
 import { commitSplit } from "@/lib/backendrequests";
 import { Expense, Payment } from "@/interfaces/interfaces";
 import { useRouter } from "next/navigation";
-import { findItemsTotal } from "@/lib/utils";
+import { findItemsTotal, WEALTH_LEDGER_URL } from "@/lib/utils";
+import Link from "next/link";
 
-export function CommitSplitDialog({ expenses }: { expenses: Expense[] }) {
+export function CommitSplitDialog({
+    expenses,
+    user,
+}: {
+    expenses: Expense[];
+    user: Person | undefined;
+}) {
     const [description, setDescription] = useState<string>("");
-    const { globalSelectedPersons, setGlobalSelectedPersons,itemsState } =
+    const { globalSelectedPersons, setGlobalSelectedPersons, itemsState } =
         useContext<PageContextType>(PageContext);
     const [individualPayments, setindividualPayments] = useState<Payment[]>([
         {},
     ]);
     const router = useRouter();
-
     const [loading, setLoading] = useState(false);
-    const handleCommit = async () => {
+    const [showWealthLedgerDialog, setShowWealthLedgerDialog] = useState(false);
+    const [totalBalanced, setTotalBalanced] = useState(false);
+
+    const proceedWithCommit = async (addToWealthLedger: boolean) => {
         setLoading(true);
         const res = await validate(
             description,
@@ -54,7 +68,24 @@ export function CommitSplitDialog({ expenses }: { expenses: Expense[] }) {
                 setLoading(false);
                 return;
             } else {
-                alert("Added  successfully You will be redirect to home page");
+                if (addToWealthLedger) {
+                    let currentUserExpense = expenses.filter(
+                        (expense) => expense.person.id === user?.id
+                    );
+
+                    let amount = currentUserExpense[0].amount;
+                    let userDescription = description;
+                    const finalURL: string =
+                        WEALTH_LEDGER_URL +
+                        "dashboard?type=expense&amount=" +
+                        amount +
+                        "&description=" +
+                        userDescription;
+                    window.open(finalURL, "_blank");
+                }
+                alert(
+                    "Added successfully. You will be redirected to home page"
+                );
                 setLoading(false);
                 router.push("/");
                 router.refresh();
@@ -65,6 +96,11 @@ export function CommitSplitDialog({ expenses }: { expenses: Expense[] }) {
             return;
         }
     };
+
+    const handleCommit = () => {
+        setShowWealthLedgerDialog(true);
+    };
+
     useEffect(() => {
         const newindividualPayments = individualPayments.filter((payment) => {
             return globalSelectedPersons.some((person) => {
@@ -84,49 +120,93 @@ export function CommitSplitDialog({ expenses }: { expenses: Expense[] }) {
                 <Button className="w-full mt-4"> Add to Splitwise</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                    <DialogTitle>Details</DialogTitle>
-                    <DialogDescription></DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 ">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="name" className="text-right">
-                            Description
-                        </Label>
-                        <Input
-                            value={description}
-                            autoComplete="off"
-                            onChange={(event) =>
-                                setDescription(event.target.value)
-                            }
-                            id="name"
-                            className="col-span-3"
-                            required
+                {showWealthLedgerDialog ? (
+                    <>
+                        <DialogHeader>
+                            <DialogTitle>Add to Wealth Ledger?</DialogTitle>
+                            <DialogDescription>
+                                Would you like to add this expense to
+                                <Link href={WEALTH_LEDGER_URL}>
+                                    Wealth Ledger
+                                </Link>
+                                as well?
+                            </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                            <Button
+                                variant="outline"
+                                onClick={() => proceedWithCommit(false)}
+                                disabled={loading}
+                            >
+                                No, Skip
+                            </Button>
+                            <Button
+                                onClick={() => proceedWithCommit(true)}
+                                disabled={loading}
+                            >
+                                {loading ? (
+                                    <>
+                                        <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                                        Please wait
+                                    </>
+                                ) : (
+                                    "Yes, Add"
+                                )}
+                            </Button>
+                        </DialogFooter>
+                    </>
+                ) : (
+                    <>
+                        <DialogHeader>
+                            <DialogTitle>Details</DialogTitle>
+                            <DialogDescription></DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 ">
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="name" className="text-right">
+                                    Description
+                                </Label>
+                                <Input
+                                    value={description}
+                                    autoComplete="off"
+                                    onChange={(event) =>
+                                        setDescription(event.target.value)
+                                    }
+                                    id="name"
+                                    className="col-span-3"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <h6 className="text-base font-bold">
+                            Total: {findItemsTotal(expenses)}
+                        </h6>
+                        <h6 className="text-sm font-semibold">Paid By:</h6>
+
+                        <IndividualPaymentManager
+                            expenses={expenses}
+                            individualPayments={individualPayments}
+                            setindividualPayments={setindividualPayments}
+                            setTotalBalanced={setTotalBalanced}
                         />
-                    </div>
-                </div>
-                <h6 className="text-base font-bold">
-                    Total: {findItemsTotal(expenses)}
-                </h6>
-                <h6 className="text-sm font-semibold">Paid By:</h6>
 
-            
-                <IndividualPaymentManager
-                    expenses={expenses}
-                    individualPayments={individualPayments}
-                    setindividualPayments={setindividualPayments}
-                />
-
-                <DialogFooter>
-                    {loading ? (
-                        <Button disabled>
-                            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                            Please wait
-                        </Button>
-                    ) : (
-                        <Button onClick={handleCommit}>Commit</Button>
-                    )}
-                </DialogFooter>
+                        <DialogFooter>
+                            {loading ? (
+                                <Button disabled>
+                                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                                    Please wait
+                                </Button>
+                            ) : (
+                                <Button
+                                    onClick={handleCommit}
+                                    disabled={!totalBalanced}
+                                >
+                                    Commit
+                                </Button>
+                            )}
+                        </DialogFooter>
+                    </>
+                )}
             </DialogContent>
         </Dialog>
     );
@@ -155,7 +235,7 @@ const validate = async (
         alert("Atleast one payer should be selected");
         return;
     }
-    return next(description, expenses, individualPayments,itemsState);
+    return next(description, expenses, individualPayments, itemsState);
 };
 
 function SelectBox({
@@ -198,10 +278,12 @@ function IndividualPaymentManager({
     individualPayments,
     setindividualPayments,
     expenses,
+    setTotalBalanced,
 }: {
     individualPayments: Payment[];
     setindividualPayments: (individualPayments: Payment[]) => void;
     expenses: Expense[];
+    setTotalBalanced: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
     const { user, globalSelectedPersons, setGlobalSelectedPersons } =
         useContext<PageContextType>(PageContext);
@@ -218,13 +300,21 @@ function IndividualPaymentManager({
     const [remainingAmount, setRemainingAmount] = useState(Total);
 
     useEffect(() => {
-
         let addedAmount = 0;
         individualPayments.forEach((payment: any) => {
             addedAmount += parseFloat(payment.amount);
         });
         setRemainingAmount(Total - addedAmount);
     }, [individualPayments, Total]);
+
+    useEffect(() => {
+        if (remainingAmount !== 0 && !Number.isNaN(remainingAmount)) {
+            setTotalBalanced(false);
+        }
+        if (remainingAmount === 0) {
+            setTotalBalanced(true);
+        }
+    }, [remainingAmount, setTotalBalanced]);
 
     const changeAmount = (index: number, amount: string) => {
         const newindividualPayments = [...individualPayments];
@@ -236,7 +326,6 @@ function IndividualPaymentManager({
         setindividualPayments(newindividualPayments);
     };
     const changePerson = (index: number, person: Person) => {
-
         const newindividualPayments = [...individualPayments];
         if (Object.keys(newindividualPayments[index]).length !== 0)
             newindividualPayments[index] = {
@@ -246,7 +335,7 @@ function IndividualPaymentManager({
         else {
             newindividualPayments[index] = {
                 person,
-                amount: "0.0",
+                amount: Total,
             };
         }
         setindividualPayments(newindividualPayments);
@@ -347,7 +436,9 @@ function IndividualPaymentManager({
                     </div>
                 )}
                 {remainingAmount === 0 && (
-                    <div className="text-green-500">Total balanced. Please continue</div>
+                    <div className="text-green-500">
+                        Total balanced. Please continue
+                    </div>
                 )}
             </div>
         </>
